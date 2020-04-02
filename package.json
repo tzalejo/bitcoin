@@ -1,11 +1,14 @@
 {
   "name": "bitcoin",
   "version": "0.0.0",
+  "main": "main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
+    "electron": "electron .",
+    "electron-build": "ng build --prod && electron .",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -28,10 +31,12 @@
     "@angular/cli": "~9.0.5",
     "@angular/compiler-cli": "~9.0.5",
     "@angular/language-service": "~9.0.5",
-    "@types/node": "^12.11.1",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
+    "electron": "^8.2.0",
+    "electron-debug": "^3.0.1",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.3.0",
