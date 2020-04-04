@@ -1,0 +1,43 @@
+.page-wrapper {
+  background-color: #161B31;
+  .page-content {
+    display: inline-block;
+    width: 100%;
+    padding-top: 20px;
+    transition: padding-left .3s ease;
+    @media screen and (min-width: 960px) {
+      padding-left: 0px;
+      padding-top: 0px;
+    }
+    .container-fluid{
+      padding-left: 0px;
+      padding-right: 0px;
+      .flex-spacer {
+        flex-grow: 1;
+      }
+      .container-page {
+        padding-block-end: 15px;
+      }
+      #matMenu {
+        background-color: #222B45;
+      }
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 998;
+      background: #161B31;
+      opacity: .5;
+      display: none;
+
+      &.show {
+        @media screen and (max-width: 960px) {
+          display: block;
+        }
+      }
+    }
+  }
+}

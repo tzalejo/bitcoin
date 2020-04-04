@@ -1,0 +1,15 @@
+<div class="flex-center position-ref full-height" id="particles-js" > 
+  <div class="top-right links">
+    <a [routerLink]="['/home']" routerLinkActive="router-link-active" >Inicio</a>
+    <a *ngIf="estaLogueado()" [routerLink]="['login']" routerLinkActive="router-link-active" >Login</a>
+    <a *ngIf="estaLogueado()" [routerLink]="['register']" routerLinkActive="router-link-active" >Registro</a>
+  </div>
+  <div class="content">
+    <div class="title m-b-md">
+        BITCOIN VENTAS
+    </div>
+    <h2 style="margin:0px;">Ingenieria de Sistemas</h2>
+    <p style="margin:0px;">Telf. 4441122 </p>
+    <p style="margin:0px;">La Pampa 1200- Neuquen, Cap.</p>    
+  </div>
+</div>

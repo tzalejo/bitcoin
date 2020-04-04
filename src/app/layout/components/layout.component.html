@@ -1,0 +1,23 @@
+<mat-sidenav-container class="page-wrapper">
+  <!-- <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+  [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+  </mat-sidenav> 161B31 -->
+  
+  <mat-sidenav-content class="page-content">
+    <div class="container-fluid">
+      <mat-toolbar color="warn" style="background-color: #222B45;">        
+        <a mat-button [routerLink]="['/home']" routerLinkActive="router-link-active" ><span>Bitcoin</span></a>
+        <a mat-button [routerLink]="['/cliente']" routerLinkActive="router-link-active">CLIENTE</a>
+        <a mat-button [routerLink]="['/prove']"  routerLinkActive="router-link-active">PROVEEDOR</a> 
+        <div class="flex-spacer"></div>
+        <button mat-button [matMenuTriggerFor]="menu" class="menu-content">Alejandro</button>
+        <mat-menu #menu="matMenu" >
+          <button mat-menu-item >Log out</button>
+        </mat-menu>
+      </mat-toolbar>
+      <div class="container-page">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

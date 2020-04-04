@@ -8,6 +8,18 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "module": "esnext",
+    "paths": {
+      "@core/*": ["src/app/core/*"],
+      "@auth/*": ["src/app/auth/*"],
+      // "@comision/*": ["src/app/comision/*"],
+      // "@estudiante/*": ["src/app/estudiante/*"],
+      "@guard/*": ["src/app/guard/*"],
+      "@home/*": ["src/app/home/*"],
+      "@layout/*": ["src/app/layout/*"],
+      "@material/*": ["src/app/material/*"],
+      // "@shared/*": ["src/app/shared/*"],
+      "@environments/*": ["src/environments/*"]
+    },
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",

@@ -1,0 +1,35 @@
+<div class="flex-center position-ref full-height" id="particles-js">
+    <div class="content row">
+        <form [formGroup]="formularioRegistro" novalidate (ngSubmit)="onSubmit()" class="mat-elevation-z8">
+            <mat-card class="shipping-card">
+                <mat-card-header>
+                    <mat-card-title>REGISTRO</mat-card-title>
+                    <mat-card-subtitle>Sistema CEC</mat-card-subtitle>
+                  </mat-card-header>
+                <mat-form-field class="field-full-width">
+                    <input matInput formControlName="userNombre" placeholder="Usuario"/>
+                    <mat-error *ngIf="formularioRegistro.controls['userNombre'].hasError('required')">Usuario es requerido</mat-error>
+                </mat-form-field>
+                
+                <mat-form-field class="field-full-width">
+                    <input matInput formControlName="email" placeholder="Email"/>
+                    <mat-error *ngIf="formularioRegistro.controls['email'].hasError('required')">Email es requerido</mat-error>
+                    <mat-error *ngIf="formularioRegistro.controls['email'].hasError('email')">Email incorrecto</mat-error>
+                </mat-form-field>
+                
+                <mat-form-field class="field-full-width">
+                    <input matInput formControlName="password" placeholder="Password" type="password">
+                    <mat-error *ngIf="formularioRegistro.controls['password'].hasError('required')">Password es requerido</mat-error>
+                    <mat-error *ngIf="formularioRegistro.controls['password'].hasError('minlength')">El Password debe contener al menos 5 caracteres </mat-error>
+                </mat-form-field>
+                <div>
+                    <button [disabled]="leido" class="btn btn-primary">
+                        <span *ngIf="leido" class="spinner-border spinner-border-sm mr-1"></span>
+                        Register
+                    </button>
+                    <a routerLink="/login" class="btn btn-link">Cancel</a>
+                </div>
+            </mat-card>
+        </form>
+    </div>
+</div>
