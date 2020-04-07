@@ -1,0 +1,16 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+    <defs>
+        <style>
+            .cls-1{fill:#627eea;}.cls-2,.cls-3,.cls-4{fill:#fff;fill-rule:evenodd;}.cls-2{fill-opacity:0.6;}.cls-4{fill-opacity:0.2;}
+        </style>
+    </defs>
+    <circle id="Oval" class="cls-1" cx="10" cy="10" r="10"/>
+    <g id="Group">
+        <polygon id="Path" class="cls-2" points="10.31 2.5 10.31 8.04 15 10.14 10.31 2.5"/>
+        <polygon class="cls-3" points="10.31 2.5 5.63 10.14 10.31 8.04 10.31 2.5"/>
+        <polygon class="cls-2" points="10.31 13.73 10.31 17.5 15 11.01 10.31 13.73"/>
+        <polygon class="cls-3" points="10.31 17.5 10.31 13.73 5.63 11.01 10.31 17.5"/>
+        <polygon class="cls-4" points="10.31 12.86 15 10.14 10.31 8.04 10.31 12.86"/>
+        <polygon class="cls-2" points="5.63 10.14 10.31 12.86 10.31 8.04 5.63 10.14"/>
+    </g>
+</svg>
