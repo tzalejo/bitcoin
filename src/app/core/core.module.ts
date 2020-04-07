@@ -12,6 +12,9 @@ import { ErrorInterceptorService } from './services/interceptor/error-intercepto
 import { CoinmarketcapService } from './services/coinmarketcap/coinmarketcap.service';
 import { BitstampService } from './services/bitstamp/bitstamp.service';
 import { CoinmonitorService } from './services/coinmonitor/coinmonitor.service';
+import { ProveService } from './services/prove/prove.service';
+import { ClienteService } from './services/cliente/cliente.service';
+
 
 @NgModule({
   declarations: [],
@@ -19,7 +22,11 @@ import { CoinmonitorService } from './services/coinmonitor/coinmonitor.service';
     CommonModule
   ],
   providers: [
+    // api_backend
     AuthService,
+    ClienteService,
+    ProveService,
+    // api web
     BitstampService,
     CoinmarketcapService,
     CoinmonitorService,
