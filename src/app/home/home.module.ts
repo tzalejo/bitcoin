@@ -7,7 +7,8 @@ import { MaterialModule } from '@material/material.module';
 import { ProveComponent } from './components/prove/prove.component';
 import { HomeComponent } from './components/home/home.component';
 import { ClienteComponent } from './components/cliente/cliente.component';
-
+import { HighchartsChartModule } from 'highcharts-angular';
+import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     HomeComponent,
@@ -18,7 +19,8 @@ import { ClienteComponent } from './components/cliente/cliente.component';
     CommonModule,
     MaterialModule,
     HomeRoutingModule,
-
+    HighchartsChartModule,
+    ReactiveFormsModule
   ]
 })
 export class HomeModule { }

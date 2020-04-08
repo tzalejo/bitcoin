@@ -24,7 +24,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatNativeDateModule } from '@angular/material/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-
+import { MatRippleModule } from '@angular/material/core';
 @NgModule({
   declarations: [],
   imports: [
@@ -52,6 +52,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatDialogModule,
     MatNativeDateModule,
     DragDropModule,
+    MatRippleModule,
   ],
   exports: [
     MatMenuModule,
@@ -77,6 +78,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatDialogModule,
     MatNativeDateModule,
     DragDropModule,
+    MatRippleModule,
   ]
 })
 export class MaterialModule { }
