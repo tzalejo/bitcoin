@@ -282,7 +282,7 @@
                         <mat-card-header>
                             <div mat-card-avatar *ngIf="(this.formularioDevuelto)"><strong>{{this.formularioCriptomoneda.value['comision_v']}}%</strong></div>
                             <mat-card-title>Vendedor</mat-card-title>
-                            <mat-card-subtitle *ngIf="(this.formularioDevuelto)" >Alejandro</mat-card-subtitle>
+                            <mat-card-subtitle *ngIf="(this.formularioDevuelto)" >{{this.usuario.name}}</mat-card-subtitle>
                         </mat-card-header>
                         <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"
                             alt="Photo of a Shiba Inu"> -->

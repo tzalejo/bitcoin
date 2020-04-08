@@ -9,6 +9,8 @@ import { Cliente } from '@core/interface/cliente';
 import * as Highcharts from 'highcharts';
 import { ProveService } from '@core/services/prove/prove.service';
 import { Proveedor } from '@core/interface/proveedor';
+import { AuthService } from '@core/services/interceptor/auth.service';
+import { User } from '@core/interface/user';
 // import { CoinmonitorService } from '@core/services/coinmonitor/coinmonitor.service';
 // import { CoinmarketcapService } from '@core/services/coinmarketcap/coinmarketcap.service';
 
@@ -55,6 +57,8 @@ export class HomeComponent implements OnInit {
   tipoCripto: string;
   // moneda seleccionada para mostrar contenido dependiendo de esta
   monedaSeleccionada: string;
+  // contiene el usuario login
+  usuario: User;
 
   precioBitcoin: string;
   precioEthereum: string;
@@ -102,7 +106,9 @@ export class HomeComponent implements OnInit {
     private clienteService: ClienteService,
     private proveService: ProveService,
     private fb: FormBuilder,
+    private authService: AuthService
   ) {
+    this.usuario = this.authService.currentUserValue;
     // obtengo todo los cliente para selector
     this.clienteService.getCliente().subscribe(
       clientes => {
