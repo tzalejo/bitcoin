@@ -39,18 +39,18 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
     if (this.form.valid) {
       const datos  = this.form.controls;
-      console.log(datos);
       this.loading = true;
       this.authService.login(datos.email.value, datos.password.value)
         .pipe(first())
         .subscribe(
           data => {
           // envio al home
+          console.log('login.components', data);
           this.router.navigate(['home']);
           Swal.fire({
             position: 'top-end',
             icon: 'success',
-            title: ` Bienvendio ${data.userNombre}` ,
+            title: ` Bienvendio ${data.name}` ,
             showConfirmButton: false,
             timer: 3500
           });

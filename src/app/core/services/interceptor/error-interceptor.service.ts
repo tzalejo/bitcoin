@@ -28,6 +28,7 @@ export class ErrorInterceptorService implements HttpInterceptor{
         let msgText = '';
         if (error.status === 401 || error.status === 403) {
           msgTitle = `Error Autorización.`;
+          // tslint:disable-next-line: max-line-length
           msgText = ` Status: ${error.status} - ` + (error.status === 401? 'Usuario y/o Contraseña es invalido, verifique por favor.': 'Solicitud NO autorizada.');
         } else if (error.status === 0 || error.status === 405 ) { // 405 error en la url
           msgTitle = `Unreachable.`;
@@ -50,7 +51,7 @@ export class ErrorInterceptorService implements HttpInterceptor{
         });
         // como hubo un error en el servidor, mando a loguear de vuelta..
         this.authService.logout();
-        this.router.navigate(['auth/login']);
+        this.router.navigate(['']);
         return throwError('Error servidor');
       } else {
         // error client-side

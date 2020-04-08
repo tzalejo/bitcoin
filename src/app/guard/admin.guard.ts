@@ -21,7 +21,7 @@ export class AdminGuard implements CanActivate {
         return true;
       }
       // no esta logueado lo reenvio al login
-      this.router.navigate(['/auth/login']);
+      this.router.navigate(['']);
       return false;
   }
 }

@@ -4,6 +4,7 @@ import { Observable, throwError} from 'rxjs';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 import { catchError } from 'rxjs/operators';
+import { environment } from '@environments/environment';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,20 +17,19 @@ export class AuthInterceptorService implements HttpInterceptor {
     // Los interceptors inspecciona/modifica las peticiones (enpoints, servicios, o como lo quieras llamar)
     // por ejemplo nuestro interceptor agrega la cabecera ‘Authorization’
     const user = this.authService.currentUserValue;
-    console.log('authinterceptor', user);
-    // verifico si el hay token
-    if (user && user.token) {
+    const api = environment.url_api;
+    // Verifico si el hay token y si verifico que el api sea solo backend con
+    // environment.url_api.includes(req.url) para agregar el token solo al api del backend
+    if (user && user.token && req.url.includes(api)) {
+      // agrego el token
       req = req.clone({ setHeaders: { Authorization: `Bearer ${user.token}` } });
-    // }else{
-    //   this.router.navigate(['login']);
     }
     return next.handle(req).pipe(
       catchError(error => {
         // si retorna un error 401.. lo redirecciono al login..
         if (error.status === 401) {
-          console.log('en auth-interceptor');
           this.authService.logout();
-          this.router.navigate(['auth/login']);
+          this.router.navigate(['']);
         }
         return throwError(error);
       })

@@ -37,7 +37,6 @@ export class AuthService {
     .pipe(
       map(user => {
           // inicio de sesion exitosa si hay un token
-          console.log('login auth.service', user);
           if (user && user.token) {
             // SSR()
             if (isPlatformBrowser(this.platformId)) {
@@ -73,6 +72,8 @@ export class AuthService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': 'true'
       })
     };
     return httpOptions;
