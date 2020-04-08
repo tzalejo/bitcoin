@@ -12,7 +12,7 @@
         <div class="flex-spacer"></div>
         <button mat-button [matMenuTriggerFor]="menu" class="menu-content">Alejandro</button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item>Log out</button>
+          <button mat-menu-item (click)="logout()">Log out</button>
         </mat-menu>
       </mat-toolbar>
       <div class="container-page">
