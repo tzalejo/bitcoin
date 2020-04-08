@@ -4,7 +4,10 @@
 
 export const environment = {
   production: false,
-  url_api: 'http://127.0.0.1:8000/api'
+  url_api: 'http://127.0.0.1:8000/api',
+  url_api_bitstamp: '	https://www.bitstamp.net/api/v2/ticker',
+  url_api_coinmarketcap: 'https://sandbox-api.coinmarketcap.com/v1/global-metrics/quotes/latest',
+  url_api_coinmonitor: ''
 };
 
 /*
