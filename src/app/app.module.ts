@@ -9,11 +9,12 @@ registerLocaleData(localeEsAr, 'es-Ar');
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from '@core/core.module';
-import { HomeModule } from './home/home.module';
+import { HomeModule } from '@home/home.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { QuicklinkModule } from 'ngx-quicklink';
 import { LayoutComponentModule } from '@layout/LayoutComponent.module';
+import { HighchartsChartModule } from 'highcharts-angular';
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,8 +30,11 @@ import { LayoutComponentModule } from '@layout/LayoutComponent.module';
     LayoutComponentModule,
     LayoutModule,
     HomeModule,
+    HighchartsChartModule
   ],
-  providers:  [{ provide: LOCALE_ID, useValue: 'es-AR'}],
+  providers:  [
+    { provide: LOCALE_ID, useValue: 'es-AR'}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
