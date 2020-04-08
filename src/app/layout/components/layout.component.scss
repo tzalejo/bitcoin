@@ -1,5 +1,5 @@
 .page-wrapper {
-  background-color: #161B31;
+  background-color: rgba(25, 30, 53, 0.082);
   .page-content {
     display: inline-block;
     width: 100%;
@@ -16,6 +16,7 @@
         flex-grow: 1;
       }
       .container-page {
+        padding: 20px;
         padding-block-end: 15px;
       }
       #matMenu {
@@ -39,5 +40,26 @@
         }
       }
     }
+    .sidebar-footer {
+      background-color: #222B45;
+      z-index: 999;
+      transition: left 0.3s ease;
+      right: 0px;
+      left: 0px;
+      // position: fixed;
+    
+      // bottom: 0;
+      display: flex;
+      
+      // flex-grow: 1;
+      text-align: center;      
+      height: 50px;
+      .row {
+        width: 100%;
+        margin-left: 3%;
+        margin-right: 3%;
+      }
+    }
   }
 }
+

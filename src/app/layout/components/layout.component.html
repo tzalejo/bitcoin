@@ -2,22 +2,49 @@
   <!-- <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
   [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
   </mat-sidenav> 161B31 -->
-  
+
   <mat-sidenav-content class="page-content">
     <div class="container-fluid">
-      <mat-toolbar color="warn" style="background-color: #222B45;">        
-        <a mat-button [routerLink]="['/home']" routerLinkActive="router-link-active" ><span>Bitcoin</span></a>
+      <mat-toolbar color="warn" style="background-color: #222B45;">
+        <a mat-button [routerLink]="['/home']" routerLinkActive="router-link-active"><span>Bitcoin</span></a>
         <a mat-button [routerLink]="['/cliente']" routerLinkActive="router-link-active">CLIENTE</a>
-        <a mat-button [routerLink]="['/prove']"  routerLinkActive="router-link-active">PROVEEDOR</a> 
+        <a mat-button [routerLink]="['/prove']" routerLinkActive="router-link-active">PROVEEDOR</a>
         <div class="flex-spacer"></div>
         <button mat-button [matMenuTriggerFor]="menu" class="menu-content">Alejandro</button>
-        <mat-menu #menu="matMenu" >
-          <button mat-menu-item >Log out</button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item>Log out</button>
         </mat-menu>
       </mat-toolbar>
       <div class="container-page">
         <router-outlet></router-outlet>
       </div>
     </div>
+    <footer class="sidebar-footer mat-elevation-z8">
+  
+      <div class="row center-md middle-md">
+        <!-- Grid column -->
+        <div class="col-md-6">
+          <!--Copyright-->
+          <p style="color: rgb(255, 255, 255)">© 2020 Copyright: Alejandro Valenzuela</p>
+        </div>
+        <div class="col-md-6">
+          <!-- Social buttons -->
+          <div class="row">
+            <div class="col-md-12">
+              <a href="https://www.facebook.com/pabloa.valenzuela.10" target="_blank">
+                  <i class="fab fa-facebook"  style="font-size: 2.5em; color: rgb(255, 255, 255); margin-right: 10px;"></i>
+              </a>
+              <a href="https://github.com/tzalejo" target="_blank">
+                <i class="fab fa-github-square" style="font-size: 2.5em; color: rgb(255, 255, 255); margin-right: 10px; "></i>
+              </a>
+              <a href="https://www.linkedin.com/in/pablo-alejandro-valenzuela-611a0570/" target="_blank">
+                <i class="fab fa-linkedin" style="font-size: 2.5em; color: rgb(255, 255, 255); margin-right: 10px;"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+    </footer>
   </mat-sidenav-content>
 </mat-sidenav-container>
