@@ -89,16 +89,16 @@ export class HomeComponent implements OnInit {
   proveedores: Proveedor[] = [];
 
   // Formulario
-  formularioCriptomoneda = this.fb.group({
-    paginaWeb: [null],
-    cliente: [null],
-    moneda: [null],
-    proveedor: [null],
-    comision_p: [null],
-    cliente_compra: [null],
-    comision_v: [null],
-    criptomoneda: [null],
-    cotizacion_dolar: [],
+  formCriptomoneda = this.fb.group({
+    paginaWeb: [null, Validators.required],
+    cliente: [null, Validators.required],
+    moneda: [null, Validators.required],
+    proveedor: [null, Validators.required],
+    comision_p: [null, Validators.required],
+    cliente_compra: [null, Validators.required],
+    comision_v: [null, Validators.required],
+    criptomoneda: [null, Validators.required],
+    cotizacion_dolar: [null, Validators.required],
   });
 
   constructor(
@@ -210,40 +210,42 @@ export class HomeComponent implements OnInit {
   criptomonedaSeleccionada(criptomoneda, tipo) {
     this.tipoCripto = tipo;
     // seteo el valor de criptomoneda...para ingresar el valor en el input de criptomoneda
-    this.formularioCriptomoneda.controls.criptomoneda.setValue(criptomoneda);
+    this.formCriptomoneda.controls.criptomoneda.setValue(criptomoneda);
   }
 
   seleccionProveedor(proveedor) {
     this.proveedorSeleccionado = proveedor;
     // seteo el valor de proveedor para mostrar en detalle
-    this.formularioCriptomoneda.controls.proveedor.setValue(proveedor.id);
+    this.formCriptomoneda.controls.proveedor.setValue(proveedor.id);
   }
   seleccionCliente(cliente) {
     // seteo el valor del cliente para mostrar en detalle
-    this.formularioCriptomoneda.controls.cliente.setValue(cliente);
+    this.formCriptomoneda.controls.cliente.setValue(cliente);
   }
 
   onSubmit() {
-    console.log(this.formularioCriptomoneda.value);
+    console.log(this.formCriptomoneda);
 
-  }
-  presupuesto(formulario) {
-    // bandera para el formulario
-    this.formularioDevuelto = true;
-    this.monedaSeleccionada = formulario.moneda;
-    console.log(formulario);
-    // tslint:disable-next-line: variable-name
-    const comision_p = parseFloat(formulario.comision_p) ;
-    // tslint:disable-next-line: variable-name
-    const cotizacion_cripto = parseFloat(formulario.criptomoneda) ;
-    // tslint:disable-next-line: variable-name
-    const comision_v = parseFloat(formulario.comision_v) ;
-    // tslint:disable-next-line: variable-name
-    const cotizacion_dolar = parseFloat(formulario.cotizacion_dolar) ;
-    // tslint:disable-next-line: variable-name
-    const cliente_compra = parseFloat(formulario.cliente_compra) ;
-    // hago los calculos para proveedor y el vendedor..
-    this.calcularProveedor( comision_p, comision_v, cotizacion_cripto, cotizacion_dolar, cliente_compra, formulario.moneda);
+    if (this.formCriptomoneda.valid) {
+
+      this.formularioDevuelto = true;
+
+      this.monedaSeleccionada = this.formCriptomoneda.value.moneda;
+      // tslint:disable-next-line: variable-name
+      const comision_p = parseFloat(this.formCriptomoneda.value.comision_p) ;
+      // tslint:disable-next-line: variable-name
+      const cotizacion_cripto = parseFloat(this.formCriptomoneda.value.criptomoneda) ;
+      // tslint:disable-next-line: variable-name
+      const comision_v = parseFloat(this.formCriptomoneda.value.comision_v) ;
+      // tslint:disable-next-line: variable-name
+      const cotizacion_dolar = parseFloat(this.formCriptomoneda.value.cotizacion_dolar) ;
+      // tslint:disable-next-line: variable-name
+      const cliente_compra = parseFloat(this.formCriptomoneda.value.cliente_compra) ;
+      // tslint:disable-next-line: max-line-length
+      this.calcularProveedor( comision_p, comision_v, cotizacion_cripto, cotizacion_dolar, cliente_compra, this.formCriptomoneda.value.moneda);
+    }
+
+
   }
 
   // tslint:disable-next-line: variable-name
@@ -296,5 +298,8 @@ export class HomeComponent implements OnInit {
       }
 
   }
+
+  vender() {}
+  borrar() {}
 
 }
