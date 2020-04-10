@@ -17,6 +17,7 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(
     routes,
     {
+      onSameUrlNavigation: 'reload', // configuro la strategy para recarga de la pagina..
       enableTracing: false,
       // tslint:disable-next-line: max-line-length
       preloadingStrategy: QuicklinkStrategy, // La estrategia Quicklink, lo que hace es que la precarga de los módulos, no es por parte del desarrollador, sino sea dinámico al comportamiento de la aplicación
