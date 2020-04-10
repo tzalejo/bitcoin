@@ -14,6 +14,7 @@ import { BitstampService } from './services/bitstamp/bitstamp.service';
 import { CoinmonitorService } from './services/coinmonitor/coinmonitor.service';
 import { ProveService } from './services/prove/prove.service';
 import { ClienteService } from './services/cliente/cliente.service';
+import { FormularioService } from './services/formulario/formulario.service';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { ClienteService } from './services/cliente/cliente.service';
     AuthService,
     ClienteService,
     ProveService,
+    FormularioService,
     // api web
     BitstampService,
     CoinmarketcapService,
