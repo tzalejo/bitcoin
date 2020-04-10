@@ -18,7 +18,7 @@ export class ClienteService {
     private authService: AuthService
   ) {}
 
-  getCliente(): Observable<Cliente[]> {
+  getClientes(): Observable<Cliente[]> {
     return this.httpCliente.get<Cliente[]>(`${this.url}`, this.header);
   }
 
