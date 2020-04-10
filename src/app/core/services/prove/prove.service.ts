@@ -19,7 +19,7 @@ export class ProveService {
   }
 
 
-  getProve(): Observable<Proveedor[]> {
+  getProveedores(): Observable<Proveedor[]> {
     return this.httpCliente.get<Proveedor[]>(`${this.url}`, this.header);
   }
 
