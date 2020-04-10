@@ -27,13 +27,13 @@
                             <div class="box">
                                 <mat-form-field class="mat-form-field">
                                     <mat-label>Seleccion Web para Cotizar</mat-label>
-                                    <mat-select formControlName="paginaWeb">
-                                        <mat-option *ngFor="let paginaWeb of paginaWebs" [value]="paginaWeb"
-                                            (click)="getWeb(paginaWeb.name)">
-                                            {{paginaWeb.name}}
+                                    <mat-select formControlName="web">
+                                        <mat-option *ngFor="let web of webs" [value]="web.name"
+                                            (click)="getWeb(web.name)">
+                                            {{web.name}}
                                         </mat-option>
                                     </mat-select>
-                                    <mat-error *ngIf="formCriptomoneda.controls['cliente_compra'].hasError('required')">
+                                    <mat-error *ngIf="formCriptomoneda.controls['importe_compra'].hasError('required')">
                                         El Web es <strong>requerido</strong>
                                     </mat-error>
 
@@ -46,13 +46,13 @@
                             <div class="box">
                                 <mat-form-field class="mat-form-field">
                                     <mat-label>Cliente</mat-label>
-                                    <mat-select formControlName="cliente">
+                                    <mat-select formControlName="cliente_id">
                                         <mat-option *ngFor="let cliente of clientes" [value]="cliente.id"
                                             (click)="seleccionCliente(cliente.id)">
                                             {{cliente.nombre}} {{cliente.apellido}}
                                         </mat-option>
                                     </mat-select>
-                                    <mat-error *ngIf="formCriptomoneda.controls['cliente_compra'].hasError('required')">
+                                    <mat-error *ngIf="formCriptomoneda.controls['importe_compra'].hasError('required')">
                                         El Cliente es <strong>requerido</strong>
                                     </mat-error>
                                 </mat-form-field>
@@ -69,12 +69,12 @@
                             <div class="box">
                                 <mat-form-field class="mat-form-field" style="padding-right: 0px;">
                                     <mat-label>Moneda </mat-label>
-                                    <mat-select formControlName="moneda">
-                                        <mat-option *ngFor="let monedero of monederos" [value]="monedero.name">
+                                    <mat-select formControlName="monedero">
+                                        <mat-option *ngFor="let monedero of monederos" [value]="monedero.name" (click)="seleccionMonedero(monedero.name)">
                                             {{monedero.name}}
                                         </mat-option>
                                     </mat-select>
-                                    <mat-error *ngIf="formCriptomoneda.controls['cliente_compra'].hasError('required')">
+                                    <mat-error *ngIf="formCriptomoneda.controls['importe_compra'].hasError('required')">
                                         La Moneda es <strong>requerido</strong>
                                     </mat-error>
                                 </mat-form-field>
@@ -88,13 +88,13 @@
                             <div class="box">
                                 <mat-form-field class="mat-form-field">
                                     <mat-label>Proveedor</mat-label>
-                                    <mat-select formControlName="proveedor">
+                                    <mat-select formControlName="proveedor_id">
                                         <mat-option *ngFor="let proveedor of proveedores" [value]="proveedor.id"
                                             (click)="seleccionProveedor(proveedor)">
                                             {{proveedor.nombre}} {{proveedor.apellido}}
                                         </mat-option>
                                     </mat-select>
-                                    <mat-error *ngIf="formCriptomoneda.controls['cliente_compra'].hasError('required')">
+                                    <mat-error *ngIf="formCriptomoneda.controls['importe_compra'].hasError('required')">
                                         El Proveedor es <strong>requerido</strong>
                                     </mat-error>
                                 </mat-form-field>
@@ -112,8 +112,8 @@
                             <div class="box">
                                 <mat-form-field class="">
                                     <mat-label>&#37; Proveedor</mat-label>
-                                    <input type="text" matInput placeholder="100%" formControlName="comision_p">
-                                    <mat-error *ngIf="formCriptomoneda.controls['comision_p'].hasError('required')">
+                                    <input type="number" matInput placeholder="100%" formControlName="comision_prove">
+                                    <mat-error *ngIf="formCriptomoneda.controls['comision_prove'].hasError('required')">
                                         El porcentaje es <strong>requerido</strong>
                                     </mat-error>
                                 </mat-form-field>
@@ -125,8 +125,8 @@
                             <div class="box">
                                 <mat-form-field class="">
                                     <mat-label>Comprar del Cliente</mat-label>
-                                    <input type="text" matInput placeholder="9999.99" formControlName="cliente_compra">
-                                    <mat-error *ngIf="formCriptomoneda.controls['cliente_compra'].hasError('required')">
+                                    <input type="number" matInput placeholder="9999.99" formControlName="importe_compra">
+                                    <mat-error *ngIf="formCriptomoneda.controls['importe_compra'].hasError('required')">
                                         El importe es <strong>requerido</strong>
                                     </mat-error>
                                 </mat-form-field>
@@ -138,8 +138,8 @@
                             <div class="box">
                                 <mat-form-field>
                                     <mat-label>&#37; Vendedor</mat-label>
-                                    <input type="text" matInput placeholder="100%" formControlName="comision_v">
-                                    <mat-error *ngIf="formCriptomoneda.controls['comision_v'].hasError('required')">
+                                    <input type="number" matInput placeholder="100%" formControlName="comision_vendedor">
+                                    <mat-error *ngIf="formCriptomoneda.controls['comision_vendedor'].hasError('required')">
                                         El porcentaje es <strong>requerido</strong>
                                     </mat-error>
                                 </mat-form-field>
@@ -150,12 +150,12 @@
                         <div class="col-xs-12 input-formulario">
                             <div class="box">
                                 <mat-form-field>
-                                    <mat-label>Dolar</mat-label>
-                                    <input type="text" matInput placeholder="Precio Dolar"
-                                        formControlName="cotizacion_dolar">
+                                    <mat-label >{{this.monedaSeleccionada}}</mat-label>
+                                    <input type="number" matInput placeholder="Precio {{this.monedaSeleccionada}}"
+                                        formControlName="dolar">
                                     <mat-error
-                                        *ngIf="formCriptomoneda.controls['cotizacion_dolar'].hasError('required') ">
-                                        El Dolar es <strong>requerido</strong>
+                                        *ngIf="formCriptomoneda.controls['dolar'].hasError('required') ">
+                                        El {{this.monedaSeleccionada}} es <strong>requerido</strong>
                                     </mat-error>
                                 </mat-form-field>
                             </div>
@@ -164,8 +164,8 @@
                     <div class="row start-xs middle-xs input-formulario">
                         <div class="col-xs-12">
                             <button mat-raised-button
-                            [disabled]="formCriptomoneda.invalid" 
-                                type="submit" >Presupuestar</button>
+                            [disabled]="formCriptomoneda.invalid"
+                                type="submit" >{{this.botonAccion}}</button>
                             <!-- <a mat-raised-button type="button">Limpiar</a> -->
                         </div>
                         <!-- <div class="col-xs-6">
@@ -235,7 +235,7 @@
                         </div>
                         <div class="col-md-4 input-formulario">
                             <mat-card class="ripple-container"
-                                (click)="criptomonedaSeleccionada(this.precioLitecoin, 'Ethereum')" matRipple
+                                (click)="criptomonedaSeleccionada(this.precioLitecoin, 'Litecoin')" matRipple
                                 [matRippleCentered]="centered" [matRippleDisabled]="disabled"
                                 [matRippleUnbounded]="unbounded" [matRippleRadius]="radius" [matRippleColor]="color">
                                 <mat-card-header>
@@ -280,7 +280,7 @@
     </form>
     <br>
 
-    <!-- calculo de la compra -->
+    <!-- calculo de la venta  -->
     <div class="row">
         <div class="col-xs-12 col-md-12">
             <div class="row">
@@ -289,20 +289,22 @@
                         <div class="row">
                             <div class="col-xs-6">
                                 <div class="row start-xs middle-xs">
-                                    <h2>Detalle de la Compra</h2>
+                                    <h2>Detalle de la venta </h2>
                                 </div>
                             </div>
                             <div class="col-xs-6">
                                 <div class="row end-xs middle-xs" *ngIf="(this.formularioDevuelto)">
-                                    <!-- cuando compran en peso o dolar-->
-                                    <div  *ngIf="(this.monedaSeleccionada === 'Peso' || this.monedaSeleccionada === 'Dolar' )">
+                                    <!-- cuando venta n en peso o dolar-->
+                                    <div  *ngIf="(this.formCriptomoneda.value.monedero === 'Peso' || 
+                                                this.formCriptomoneda.value.monedero === 'Dolar' || 
+                                                this.formCriptomoneda.value.monedero === 'Euro')">
                                         <h4 class="col-xs-12" style="margin-bottom: 0px;" >
-                                            Ganancia Criptomoneda: <strong> {{(this.costo_total.prove-this.costo_total.vende)}} {{this.tipoCripto}}</strong> 
+                                            Ganancia Criptomoneda: <strong> {{(this.costo_total.prove-this.costo_total.vende)}} {{ this.formCriptomoneda.value.tipo_criptomoneda}}</strong> 
                                         </h4>
                                         
                                     </div>
-                                    <!-- cuando compran en criptomoneda -->
-                                    <div  *ngIf="(this.monedaSeleccionada === 'Criptomoneda')">
+                                    <!-- cuando venta n en criptomoneda -->
+                                    <div  *ngIf="(this.formCriptomoneda.value.monedero === 'Criptomoneda')">
                                         <h4 class="col-xs-12" style="margin-bottom: 0px;">
                                             Ganancia Dolares: <strong>US$&nbsp; {{(this.costo_total.vende - this.costo_total.prove) | number:'1.2-2' }}</strong>
                                         </h4>
@@ -322,7 +324,7 @@
                     <mat-card class="input-formulario mat-elevation-z8">
                         <mat-card-header>
                             <div mat-card-avatar *ngIf="(this.formularioDevuelto)">
-                                <strong>{{this.formCriptomoneda.value['comision_p']}}&#37;</strong> </div>
+                                <strong>{{this.formCriptomoneda.value['comision_prove']}}&#37;</strong> </div>
                             <mat-card-title>Proveedor</mat-card-title>
                             <mat-card-subtitle *ngIf="(this.formularioDevuelto)">
                                 {{this.proveedorSeleccionado.apellido}} {{this.proveedorSeleccionado.nombre}}
@@ -331,18 +333,23 @@
                         <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"
                             alt="Photo of a Shiba Inu"> -->
                         <mat-card-content *ngIf="(this.formularioDevuelto)">
-                            <h3>Comision: US$&nbsp; {{this.calc_com_prov.prove | number:'1.2-2' }} -
-                                <strong>(US$&nbsp;{{this.costo_dolar.prove | number:'1.2-2' }} {{this.tipoCripto}})
+                            <h3 *ngIf="this.monedaSeleccionada === 'Dolar'">Comision: US$&nbsp; {{this.calc_com_prov.prove | number:'1.2-2' }} -
+                                <strong>(US$&nbsp;{{this.costo_dolar.prove | number:'1.2-2' }} {{ this.formCriptomoneda.value.tipo_criptomoneda}})
+                                </strong></h3>
+                            <h3 *ngIf="this.monedaSeleccionada === 'Euro'">Comision: &#8364; {{this.calc_com_prov.prove | number:'1.2-2' }} -
+                                <strong>(&#8364; {{this.costo_dolar.prove | number:'1.2-2' }} {{ this.formCriptomoneda.value.tipo_criptomoneda}})
                                 </strong></h3>
 
                             <!-- Cuadno compro con pesos o dolares -->
-                            <h2 *ngIf="(this.monedaSeleccionada === 'Peso' || this.monedaSeleccionada === 'Dolar' )">
+                            <h2 *ngIf="(this.formCriptomoneda.value.monedero === 'Peso' || 
+                                        this.formCriptomoneda.value.monedero === 'Dolar' || 
+                                        this.formCriptomoneda.value.monedero === 'Euro')">
                                 Total Criptomonedas: {{this.costo_total.prove }}</h2>
 
                             <!-- cuando compro criptomoneda -->
-                            <h2 *ngIf="(this.monedaSeleccionada === 'Criptomoneda')">Pesos: &#36;
+                            <h2 *ngIf="(this.formCriptomoneda.value.monedero === 'Criptomoneda')">Pesos: &#36;
                                 {{this.costo_peso.prove | number:'1.2-2' }}</h2>
-                            <h2 *ngIf="(this.monedaSeleccionada === 'Criptomoneda')">Dolares: US$&nbsp;
+                            <h2 *ngIf="(this.formCriptomoneda.value.monedero === 'Criptomoneda')">Dolares: US$&nbsp;
                                 {{this.costo_total.prove | number:'1.2-2' }}</h2>
 
 
@@ -353,7 +360,7 @@
                     <mat-card class="input-formulario mat-elevation-z8">
                         <mat-card-header>
                             <div mat-card-avatar *ngIf="(this.formularioDevuelto)">
-                                <strong>{{this.formCriptomoneda.value['comision_v']}}&#37;</strong></div>
+                                <strong>{{this.formCriptomoneda.value['comision_vendedor']}}&#37;</strong></div>
                             <mat-card-title>Vendedor</mat-card-title>
                             <mat-card-subtitle *ngIf="(this.formularioDevuelto)">{{this.usuario.name}}
                             </mat-card-subtitle>
@@ -361,18 +368,23 @@
                         <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"
                             alt="Photo of a Shiba Inu"> -->
                         <mat-card-content *ngIf="(this.formularioDevuelto)">
-                            <h3>Comision: US$&nbsp; {{this.calc_com_prov.vende | number:'1.2-2' }} -
-                                <strong>(US$&nbsp;{{this.costo_dolar.vende | number:'1.2-2' }} {{this.tipoCripto}})
+                            <h3 *ngIf="this.monedaSeleccionada === 'Dolar'">Comision: US$&nbsp; {{this.calc_com_prov.vende | number:'1.2-2' }} -
+                                <strong>(US$&nbsp;{{this.costo_dolar.vende | number:'1.2-2' }} {{ this.formCriptomoneda.value.tipo_criptomoneda}})
+                                </strong></h3>
+                            <h3 *ngIf="this.monedaSeleccionada === 'Euro'">Comision: &#8364; {{this.calc_com_prov.vende | number:'1.2-2' }} -
+                                <strong>(&#8364;{{this.costo_dolar.vende | number:'1.2-2' }} {{ this.formCriptomoneda.value.tipo_criptomoneda}})
                                 </strong></h3>
 
                             <!-- Cuadno compro con pesos -->
-                            <h2 *ngIf="(this.monedaSeleccionada === 'Peso' || this.monedaSeleccionada === 'Dolar' )">
+                            <h2 *ngIf="(this.formCriptomoneda.value.monedero === 'Peso' || 
+                                        this.formCriptomoneda.value.monedero === 'Dolar' || 
+                                        this.formCriptomoneda.value.monedero === 'Euro')">
                                 Total Criptomonedas: {{this.costo_total.vende }}</h2>
 
                             <!-- cuando compro criptomoneda -->
-                            <h2 *ngIf="(this.monedaSeleccionada === 'Criptomoneda')">Pesos: $
+                            <h2 *ngIf="(this.formCriptomoneda.value.monedero === 'Criptomoneda')">Pesos: $
                                 {{this.costo_peso.vende | number:'1.2-2' }}</h2>
-                            <h2 *ngIf="(this.monedaSeleccionada === 'Criptomoneda')">Dolares: US$&nbsp;
+                            <h2 *ngIf="(this.formCriptomoneda.value.monedero === 'Criptomoneda')">Dolares: US$&nbsp;
                                 {{this.costo_total.vende | number:'1.2-2' }}</h2>
                         </mat-card-content>
                     </mat-card>
@@ -380,12 +392,21 @@
 
             </div>
             <br>
-            <div class="row end-xs middle-xs">
-                <div class="col-xs-12 col-md-12">
-                    <div class="mat-elevation-z8 input-formulario">
-                        <div class="flex-spacer"></div>
-                        <button mat-raised-button type="button" [disabled]="formCriptomoneda.invalid" style="margin-right: 10px;" (click)="vender()">Vender</button>
-                        <button mat-raised-button type="button" [disabled]="formCriptomoneda.invalid" (click)="borrar()">Borrar</button>                        
+            <div class="mat-elevation-z8 input-formulario">
+                <div class="row between-xs ">
+                    <div class="col-xs-2">
+                        <div class="box">
+                            <button mat-raised-button type="button" 
+                            [disabled]="formCriptomoneda.invalid" style="margin-right: 10px;" 
+                            (click)="vender()">Vender</button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xs-2">
+                        <div class="box">
+                            <button mat-raised-button type="button" style="margin-right: 10px;"  (click)="nuevoFormulario()">Nuevo</button>
+                            <button mat-raised-button type="button" [disabled]="formCriptomoneda.invalid" (click)="borrar()">Borrar</button>                        
+                        </div>
                     </div>
                 </div>
             </div>
