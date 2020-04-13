@@ -22,4 +22,12 @@ export class ClienteService {
     return this.httpCliente.get<Cliente[]>(`${this.url}`, this.header);
   }
 
+  getCliente(cliente): Observable<Cliente[]> {
+    return this.httpCliente.get<Cliente[]>(`${this.url}/mostrar/${cliente}`, this.header);
+  }
+
+  crearCliente(cliente): Observable<any> {
+     return this.httpCliente.post(`${this.url}/crear`, cliente, this.header);
+  }
+
 }

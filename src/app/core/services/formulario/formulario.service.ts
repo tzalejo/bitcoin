@@ -18,8 +18,8 @@ export class FormularioService {
     private authService: AuthService
   ) {}
 
-  getFormularios(): Observable<Formulario[]> {
-    return this.httpCliente.get<Formulario[]>(`${this.url}`, this.header);
+  getFormularios(): Observable<any[]> {
+    return this.httpCliente.get<any []>(`${this.url}`, this.header);
   }
 
   crearFormulario(formulario: Formulario): Observable<any> {

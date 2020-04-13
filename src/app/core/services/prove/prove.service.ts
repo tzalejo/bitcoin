@@ -23,4 +23,8 @@ export class ProveService {
     return this.httpCliente.get<Proveedor[]>(`${this.url}`, this.header);
   }
 
+  crearProveedor(proveedor): Observable<any> {
+    return this.httpCliente.post(`${this.url}/crear`, proveedor, this.header);
+  }
+
 }
