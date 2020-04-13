@@ -15,6 +15,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { QuicklinkModule } from 'ngx-quicklink';
 import { LayoutComponentModule } from '@layout/LayoutComponent.module';
 import { HighchartsChartModule } from 'highcharts-angular';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,7 +32,8 @@ import { HighchartsChartModule } from 'highcharts-angular';
     LayoutComponentModule,
     LayoutModule,
     HomeModule,
-    HighchartsChartModule
+    HighchartsChartModule,
+    SweetAlert2Module
   ],
   providers:  [
     { provide: LOCALE_ID, useValue: 'es-AR'}
