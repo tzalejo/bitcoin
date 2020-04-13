@@ -1,11 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Validators, FormBuilder } from '@angular/forms';
+import { Validators, FormBuilder, FormGroupDirective } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import Swal from 'sweetalert2';
 import { MatSort } from '@angular/material/sort';
 import { Router, NavigationEnd } from '@angular/router';
 // servicios
 import { BitstampService } from '@core/services/bitstamp/bitstamp.service';
 import { ClienteService } from '@core/services/cliente/cliente.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Cliente } from '@core/interface/cliente';
 import * as Highcharts from 'highcharts';
 import { ProveService } from '@core/services/prove/prove.service';
@@ -14,28 +17,50 @@ import { AuthService } from '@core/services/interceptor/auth.service';
 import { User } from '@core/interface/user';
 import { Formulario } from '@core/interface/formulario';
 import { FormularioService } from '@core/services/formulario/formulario.service';
-// import { CoinmonitorService } from '@core/services/coinmonitor/coinmonitor.service';
-// import { CoinmarketcapService } from '@core/services/coinmarketcap/coinmarketcap.service';
 import { format } from 'date-fns';
+
+export interface TablaFormulario {
+  'fecha': string;
+  'estado': string;
+  'cliente': string;
+  'compra_moneda': string;
+  'cotizacion': string;
+  'prove': string;
+  'pc_prove': string;
+  'pc_venta': string;
+  'importe': string;
+  'criptomoneda': string;
+  'valor_comision_prove': string;
+  'valor_comision_vendedor': string;
+  'g_euro': string;
+  'g_dolar': string;
+  'g_peso': string;
+  'g_criptomoneda': string;
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class HomeComponent implements OnInit {
-  // Tabla *****
-  displayedColumns: string[] = ['created', 'state', 'number', 'title'];
-  exampleDatabase: null;
-  data = [];
-
-  resultsLength = 0;
-  isLoadingResults = true;
-  isRateLimitReached = false;
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  // *********
-
+  // Tabla ***** ELEMENT_DATA
+  // dataSource = [];
+  columnsToDisplay = [
+    'fecha', 'importe', 'criptomoneda', 'valor_comision_prove',
+    'valor_comision_vendedor', 'g_dolar', 'g_euro', 'g_peso', 'g_criptomoneda'];
+  expandedElement: TablaFormulario | null;
+  @ViewChild(FormGroupDirective) formDirective: FormGroupDirective;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  dataSource: MatTableDataSource<any>;
+  tablaFormularios = [];
   // Para el efecto de las criptomonedas
   centered = false;
   disabled = false;
@@ -45,7 +70,7 @@ export class HomeComponent implements OnInit {
   // ****
   // variables para el calculo
   // tslint:disable-next-line: variable-name
-  calc_com_prov = { prove: 0, vende: 0 };
+  calc_comosion = { prove: 0, vende: 0 };
   // tslint:disable-next-line: variable-name
   costo_dolar = { prove: 0, vende: 0 };
   // tslint:disable-next-line: variable-name
@@ -62,6 +87,11 @@ export class HomeComponent implements OnInit {
   monedaSeleccionada = 'Dolar';
   // contiene el usuario login
   usuario: User;
+  // variable para las ganancia
+  gananciaPeso: number;
+  gananciaDolar: number;
+  gananciaCriptomoneda: number;
+  /** */
 
   precioBitcoin: string;
   precioEthereum: string;
@@ -80,36 +110,47 @@ export class HomeComponent implements OnInit {
     { name: 'Coinmarketcap' },
     { name: 'Coinmonitor' },
   ];
-  monederos = [
-    {name: 'Dolar'},
-    {name: 'Euro'},
-    {name: 'Peso'},
-    {name: 'Criptomoneda'},
+  compra_monedas = [
+    { name: 'Dolar' },
+    { name: 'Euro' },
+    { name: 'Peso' },
+    { name: 'Criptomoneda' },
   ];
+
+  // Para guardar un cliente y proveedor para cuando agrego desde el formulario.
+  cliente: Cliente;
+  proveedor: Proveedor;
 
   // Para cargar todo los cliente
   clientes: Cliente[] = [];
   // Para cargar todo los proveedores
   proveedores: Proveedor[] = [];
-  // Para enviar formlario
-  frmNuevo: Formulario;
   // Formulario
   formCriptomoneda = this.fb.group({
     id: [null],
     web: [null, Validators.required],
-    monedero: [null, Validators.required],
+    compra_moneda: [null, Validators.required], // cambio el monedero
     comision_prove: [null, Validators.required],
     comision_vendedor: [null, Validators.required],
+    valor_comision_prove: [null], // valor de la comision prove
+    valor_comision_vendedor: [null], // valor de la comision vendedor
     criptomoneda: [null, Validators.required],
     tipo_criptomoneda: [null],
     importe_compra: [null, Validators.required],
     dolar: [null, Validators.required],
     estado: [null],
+    // es cuanto sale la criptomoneda con respecto a la comision del proveedor (comision + criptomoneda)
+    costo_criptomoneda_p: [null],
+    // es cuanto sale la criptomoneda con respecto a la comision del vendedor (comision + criptomoneda)
+    costo_criptomoneda_v: [null],
+    // almacenare la ganancia en criptomoneda
+    ganacia_criptomoneda: [null],
     fecha_compra: [null],
     cliente_id: [null, Validators.required],
     proveedor_id: [null, Validators.required],
     user_id: [null],
   });
+
   mySubscription: any;
   constructor(
     private router: Router,
@@ -124,13 +165,17 @@ export class HomeComponent implements OnInit {
     this.usuario = this.authService.currentUserValue;
     // seteo el usuario para el formulario..
     this.formCriptomoneda.controls.user_id.setValue(this.usuario.id);
-    // obtengo todo los cliente para selector
-    this.clienteService.getClientes()
-        .subscribe(clientes => { this.clientes = clientes; });
+    this.actualizarClientes();
+    this.actualizarProveedores();
 
-    // obtengo todo los proveedores para el selector
-    this.proveService.getProveedores()
-        .subscribe(proveedores => {this.proveedores  = proveedores; });
+    // seteo los grafico
+    this.seteoGrafico();
+
+    this.actualizoTablaFormulario();
+    this.getWeb('Bitstamp');
+  }
+
+  seteoGrafico() {
     // doy formato al grafico
     this.graficaBitcoin = {
       chart: {
@@ -157,16 +202,35 @@ export class HomeComponent implements OnInit {
     // hago copia del formato grafico
     this.graficaLitecoin = this.graficaBitcoin;
     this.graficaEthereum = this.graficaBitcoin;
-
   }
 
+  actualizoTablaFormulario() {
+    this.formularioService.getFormularios()
+    .subscribe(formularios => {
+
+      this.dataSource =  new MatTableDataSource(formularios);
+      this.dataSource.paginator = this.paginator;
+      console.log(this.dataSource);
+    });
+  }
+
+  actualizarClientes() {
+    // obtengo todo los cliente para selector
+    this.clienteService.getClientes()
+      .subscribe(clientes => { this.clientes = clientes; });
+  }
+  actualizarProveedores() {
+    // obtengo todo los proveedores para el selector
+    this.proveService.getProveedores()
+      .subscribe(proveedores => { this.proveedores = proveedores; });
+  }
   ngOnInit(): void {
     // configuro la strategy para recarga de la pagina..
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   getWeb(webSeleccionada) {
-    console.log(webSeleccionada);
+    // console.log(webSeleccionada);
     // obtengo para la web seleccionada..
     this.obtenerBitcoins();
     this.obtenerEthereum();
@@ -181,7 +245,7 @@ export class HomeComponent implements OnInit {
         const transactionBitstamp = monedas;
         // tslint:disable-next-line: no-string-literal
         this.precioBitcoin = monedas[0]['price'];
-        this.fechaBitcoin = format(new Date(),  'yyyy-MM-dd HH:mm:ss'); // midata[0]['date'];
+        this.fechaBitcoin = format(new Date(), 'yyyy-MM-dd HH:mm:ss'); // midata[0]['date'];
         const precio = transactionBitstamp.map(x => parseFloat(x.price));
         // tslint:disable-next-line: no-string-literal
         this.graficaBitcoin.series[0]['data'] = precio.reverse();
@@ -196,7 +260,7 @@ export class HomeComponent implements OnInit {
         const transactionEthereum = monedas;
         // tslint:disable-next-line: no-string-literal
         this.precioEthereum = monedas[0]['price'];
-        this.fechaEthereum = format(new Date(),  'yyyy-MM-dd HH:mm:ss'); // midata[0]['date'];
+        this.fechaEthereum = format(new Date(), 'yyyy-MM-dd HH:mm:ss'); // midata[0]['date'];
         const precio = transactionEthereum.map(x => parseFloat(x.price));
         // tslint:disable-next-line: no-string-literal
         this.graficaEthereum.series[0]['data'] = precio.reverse();
@@ -252,29 +316,66 @@ export class HomeComponent implements OnInit {
 
   onSubmit() {
     // si es valido y esta en false quiere decir q vamos a crear un presupuesto..
-    if (this.formCriptomoneda.valid ) {
-      // this.formularioDevuelto = new Formulario();
-      // console.log('comision_p', this.formCriptomoneda.value.comision_prove);
-      // console.log('comision_v', this.formCriptomoneda.value.comision_vendedor);
-      // console.log('criptomoneda', this.formCriptomoneda.value.criptomoneda);
-      // console.log('dolar', this.formCriptomoneda.value.dolar);
-      // console.log('importe_compra', this.formCriptomoneda.value.importe_compra);
-      // console.log('monedero', this.formCriptomoneda.value.monedero);
-
+    console.log('inicio submit', this.formCriptomoneda.value);
+    if (this.formCriptomoneda.valid) {
       // Seteo los valores para hacer la conversion..
       this.formCriptomoneda.controls.comision_prove.setValue(parseFloat(this.formCriptomoneda.value.comision_prove));
       this.formCriptomoneda.controls.comision_vendedor.setValue(parseFloat(this.formCriptomoneda.value.comision_vendedor));
       this.formCriptomoneda.controls.criptomoneda.setValue(parseFloat(this.formCriptomoneda.value.criptomoneda));
       this.formCriptomoneda.controls.dolar.setValue(parseFloat(this.formCriptomoneda.value.dolar));
       this.formCriptomoneda.controls.importe_compra.setValue(parseFloat(this.formCriptomoneda.value.importe_compra));
-      // hago los calculo
-      this.calcularProveedor(
-        this.formCriptomoneda.value.comision_prove,
-        this.formCriptomoneda.value.comision_vendedor,
-        this.formCriptomoneda.value.criptomoneda,
-        this.formCriptomoneda.value.dolar,
-        this.formCriptomoneda.value.importe_compra,
-        this.formCriptomoneda.value.monedero);
+
+      // saco le valor porcentaje de la comision
+      // tslint:disable-next-line: max-line-length
+      this.formCriptomoneda.controls.valor_comision_prove.setValue((this.formCriptomoneda.value.comision_prove * this.formCriptomoneda.value.criptomoneda) / 100);
+      // tslint:disable-next-line: max-line-length
+      this.formCriptomoneda.controls.valor_comision_vendedor.setValue((this.formCriptomoneda.value.comision_vendedor * this.formCriptomoneda.value.criptomoneda) / 100);
+
+      // obtengo el valor la comision + criptomoneda
+      // tslint:disable-next-line: max-line-length
+      this.formCriptomoneda.controls.costo_criptomoneda_p.setValue(this.formCriptomoneda.value.criptomoneda + this.formCriptomoneda.value.valor_comision_prove);
+      // tslint:disable-next-line: max-line-length
+      this.formCriptomoneda.controls.costo_criptomoneda_v.setValue(this.formCriptomoneda.value.criptomoneda + this.formCriptomoneda.value.valor_comision_vendedor);
+
+      // tslint:disable-next-line: max-line-length
+      const importe_compra = this.formCriptomoneda.value.importe_compra * (this.formCriptomoneda.value.compra_moneda === 'Criptomoneda' ? (this.formCriptomoneda.value.costo_criptomoneda_v) : 1);
+      if (this.formCriptomoneda.value.compra_moneda === 'Dolar' ||
+        this.formCriptomoneda.value.compra_moneda === 'Euro' ||
+        this.formCriptomoneda.value.compra_moneda === 'Criptomoneda') {
+        // obtengo la criptomonedas con respecto a la comision del proveedor y vendedor
+
+        this.costo_total.prove = (importe_compra / this.formCriptomoneda.value.costo_criptomoneda_p);
+        this.costo_total.vende = (importe_compra / this.formCriptomoneda.value.costo_criptomoneda_v);
+
+        // criptomoneda
+        this.gananciaCriptomoneda = this.costo_total.prove - this.costo_total.vende;
+        this.formCriptomoneda.controls.ganacia_criptomoneda.setValue(this.gananciaCriptomoneda);
+        // dolar
+        this.gananciaDolar = (this.gananciaCriptomoneda * this.formCriptomoneda.value.criptomoneda);
+      }
+
+      if (this.formCriptomoneda.value.compra_moneda === 'Peso') {
+        // obtengo la criptomonedas con respecto a la comision(en dolar) del proveedor y vendedor
+        // tslint:disable-next-line: max-line-length
+        this.costo_total.prove = this.formCriptomoneda.value.importe_compra / (this.formCriptomoneda.value.costo_criptomoneda_p * this.formCriptomoneda.value.dolar);
+        // tslint:disable-next-line: max-line-length
+        this.costo_total.vende = this.formCriptomoneda.value.importe_compra / (this.formCriptomoneda.value.costo_criptomoneda_v * this.formCriptomoneda.value.dolar);
+
+        // criptomoneda
+        this.gananciaCriptomoneda = this.costo_total.prove - this.costo_total.vende;
+        this.formCriptomoneda.controls.ganacia_criptomoneda.setValue(this.gananciaCriptomoneda);
+        // dolar
+        this.gananciaDolar = (this.gananciaCriptomoneda * this.formCriptomoneda.value.costo_criptomoneda_p);
+      }
+      // peso
+      this.gananciaPeso = (this.gananciaDolar * this.formCriptomoneda.value.dolar);
+
+      // Cuando selecciono Criptomoneda tengo q cambiar a dolar.. para q realice los calculo con esta configuracion
+      if (this.formCriptomoneda.value.compra_moneda === 'Criptomoneda') {
+        this.formCriptomoneda.controls.compra_moneda.setValue('Dolar');
+        // tslint:disable-next-line: max-line-length
+        this.formCriptomoneda.controls.importe_compra.setValue(this.formCriptomoneda.value.importe_compra * this.formCriptomoneda.value.costo_criptomoneda_v);
+      }
 
       // ahora si esta en this.formularioDevuelto === true quiere decir q ya se genero el presupuesto, por lo tanto actualizamos
       if (this.formularioDevuelto === false) {
@@ -299,60 +400,10 @@ export class HomeComponent implements OnInit {
       }
 
     }
+    console.log('fin submit', this.formCriptomoneda.value);
   }
 
-  // tslint:disable-next-line: variable-name
-  calcularProveedor( comision_p, comision_v, cotizacion_cripto, cotizacion_dolar, cliente_compra, moneda) {
-    // console.log(moneda);
-    // calc_com_prov = { prove: 0, vende: 0 };
-    this.calc_com_prov.prove = (comision_p * cotizacion_cripto) / 100;
-    this.calc_com_prov.vende = (comision_v * cotizacion_cripto) / 100;
-    // console.log((comision_p * cotizacion_cripto) / 100);
-    // console.log((comision_v * cotizacion_cripto) / 100);
-
-    this.costo_dolar.prove  = this.calc_com_prov.prove + cotizacion_cripto;
-    this.costo_dolar.vende  = this.calc_com_prov.vende + cotizacion_cripto;
-    // console.log(this.calc_com_prov.prove + cotizacion_cripto);
-    // console.log(this.calc_com_prov.vende + cotizacion_cripto);
-
-    if (moneda === 'Dolar' || moneda === 'Euro') {
-      this.costo_total.prove = cliente_compra / this.costo_dolar.prove ;
-      this.costo_total.vende = cliente_compra / this.costo_dolar.vende ;
-      // console.log(cliente_compra / this.costo_dolar.prove );
-      // console.log(cliente_compra / this.costo_dolar.vende );
-
-      this.costo_peso.prove = cliente_compra * cotizacion_dolar;
-      this.costo_peso.vende = cliente_compra * cotizacion_dolar;
-      // console.log(cliente_compra * cotizacion_dolar);
-    }
-
-    if (moneda === 'Peso') {
-      this.costo_peso.prove = this.costo_dolar.prove  * cotizacion_dolar;
-      this.costo_peso.vende = this.costo_dolar.vende  * cotizacion_dolar;
-      // console.log(this.costo_dolar.prove * cotizacion_dolar);
-      // console.log(this.costo_dolar.vende * cotizacion_dolar);
-
-      this.costo_total.prove = cliente_compra / this.costo_peso.prove ;
-      this.costo_total.vende = cliente_compra / this.costo_peso.vende ;
-      // console.log(cliente_compra / this.costo_peso.prove );
-      // console.log(cliente_compra / this.costo_peso.vende );
-    }
-
-    if ( moneda === 'Criptomoneda') {
-      this.costo_total.prove = this.costo_dolar.prove * cliente_compra;
-      this.costo_total.vende = this.costo_dolar.vende * cliente_compra;
-      // console.log(this.costo_dolar.prove * cliente_compra);
-      // console.log(this.costo_dolar.vende * cliente_compra);
-
-      this.costo_peso.prove = this.costo_total.prove * cotizacion_dolar;
-      this.costo_peso.vende = this.costo_total.vende * cotizacion_dolar;
-      // console.log(this.costo_total.prove * cotizacion_dolar);
-      // console.log(this.costo_total.vende * cotizacion_dolar);
-    }
-
-  }
-
-  vender() {
+  venderMoneda() {
     // console.log(this.formCriptomoneda);
     if (this.formCriptomoneda.value.id !== null) {
       this.formCriptomoneda.controls.estado.setValue('V');
@@ -360,22 +411,132 @@ export class HomeComponent implements OnInit {
         console.log(data);
         // this.formCriptomoneda.controls.estado.setValue(data.estado);
         // recargo la pagina
-        this.router.navigateByUrl('home');
+        this.nuevoFormulario();
       });
     }
   }
 
-  borrar() {
+  borrarMoneda() {
     if (this.formCriptomoneda.value.id !== null) {
       this.formularioService.eliminarFormulario(this.formCriptomoneda.value).subscribe(data => {
         // console.log(data);
-        this.router.navigateByUrl('home');
+        this.nuevoFormulario();
       });
     }
   }
 
+  // vamos resetear..
   nuevoFormulario() {
-    this.router.navigateByUrl('home');
+    // reseteo formulario
+    this.formCriptomoneda.reset();
+    this.formDirective.resetForm();
+    this.botonAccion = 'Presupuestar';
+    this.seteoGrafico();
+    this.getWeb('Bitstamp'); // actualizo los valores de la criptomoneda..
+    this.actualizoTablaFormulario();
+    // bandera para indicar que fue emitido el presupuesto
+    this.formularioDevuelto = false;
+    // seteo el usuario para el formulario..
+    this.formCriptomoneda.controls.user_id.setValue(this.usuario.id);
+    // this.router.navigateByUrl('home');
   }
 
+
+  async agregarCliente() {
+    const { value: apellido } = await Swal.fire({
+      title: 'Ingrese Apellido del Cliente',
+      input: 'text',
+      inputPlaceholder: 'Ingrese Apellido',
+      showCancelButton: true,
+      inputValidator: (value) => {
+        return new Promise((resolve) => {
+          if (value.length === 0) {
+            resolve('Ingrese el apellido');
+          } else {
+            resolve();
+          }
+        });
+      }
+    });
+    if (apellido) {
+      this.clienteService.crearCliente({ apellido, nombre: '', email: '', telefono: '' }).subscribe(data => {
+        // console.log(data);
+        this.cliente = data;
+        this.actualizarClientes();
+        // seteo con el nuevo cliente
+        this.formCriptomoneda.controls.cliente_id.setValue(data.id);
+      });
+    }
+
+  }
+
+  async agregarProveedor() {
+    const { value: apellido } = await Swal.fire({
+      title: 'Ingrese Apellido del Proveedor',
+      input: 'text',
+      inputPlaceholder: 'Ingrese Apellido',
+      showCancelButton: true,
+      inputValidator: (value) => {
+        return new Promise((resolve) => {
+          if (value.length === 0) {
+            resolve('Ingrese el apellido');
+          } else {
+            resolve();
+          }
+        });
+      }
+    });
+    if (apellido) {
+      // agrego el nuevo proveedor..con solo el apellido..
+      this.proveService.crearProveedor({ apellido, nombre: '', email: '', telefono: '' })
+        .subscribe(data => {
+          // console.log(data);
+          this.actualizarProveedores();
+          this.proveedor = data;
+          this.proveedorSeleccionado = data;
+          this.formCriptomoneda.controls.proveedor_id.setValue(data.id);
+        });
+    }
+  }
+
+
+  /** Gets the total cost of all transactions. */
+  // getTotalCripto() {
+  //   return this.dataSource.map(t => parseFloat(t.ganacia_criptomoneda)).reduce((acc, value) => acc + value, 0);
+  // }
+  // getTotalDolar() {
+  //   return this.dataSource.map(t => t.ganacia_criptomoneda).reduce((acc, value) => 0, 0);
+  // }
+  // getTotalPeso() {
+  //   return this.dataSource.map(t => t.ganacia_criptomoneda).reduce((acc, value) => 0, 0);
+  // }
+  // getTotalEuro() {
+  //   return this.dataSource.map(t => t.ganacia_criptomoneda).reduce((acc, value) => 0, 0);
+  // }
 }
+
+
+// tslint:disable-next-line: only-arrow-functions
+// formularios.map( function(item) {
+//   tabla.push({
+//     'fecha': item.fecha_compra,
+//     'estado': item.estado,
+//     'cliente': item.cliente,
+//     'moneda': item.tipo_criptomoneda,
+//     'cotizacion': item.dolar,
+//     'prove': item.proveedor,
+//     'pc_prove': item.comision_prove,
+//     'pc_venta': item.comision_vendedor,
+//     'importe': item.importe_compra,
+//     'criptomoneda': item.criptomoneda,
+//     'calculo_comision': (item.pc_prove*item.criptomoneda / 100)  // (comision_prove * criptomoneda) / 100;
+//     'total_costo_prove': (((item.criptomoneda * item.comision_prove) / 100) + item.criptomoneda),
+//     'total_costo_venta': (((item.criptomoneda * item.comision_vendedor) / 100) + item.criptomoneda),
+//     'g_dolar': '',
+//     'g_peso': '',
+//     'g_criptomoneda': '',
+//   });
+// });
+// // this.tablaFormularios = tabla;
+// console.log(tabla);
+// return tabla;
