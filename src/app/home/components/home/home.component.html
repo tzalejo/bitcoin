@@ -584,10 +584,10 @@
                                 </div>
                                 <div class="row start-xs">
                                     <div class="col-xs-12 col-md-12" *ngIf=" element.compra_moneda === 'Dolar'|| element.compra_moneda === 'Peso' ">
-                                        Comision Vendedor: ({{element.comision_vendedor}}%) US$&nbsp; {{ (element.costo_criptomoneda_p/1 ) | number:'1.2-2' }}
+                                        Comision Vendedor: ({{element.comision_vendedor}}%) US$&nbsp; {{ (element.costo_criptomoneda_v/1 ) | number:'1.2-2' }}
                                     </div>
                                     <div class="col-xs-12 col-md-12" *ngIf=" element.compra_moneda === 'Euro'">
-                                        Comision Vendedor: ({{element.comision_vendedor}}%)  &#8364;{{ (element.costo_criptomoneda_p/1 ) | number:'1.2-2' }}
+                                        Comision Vendedor: ({{element.comision_vendedor}}%)  &#8364;{{ (element.costo_criptomoneda_v/1 ) | number:'1.2-2' }}
                                     </div>
                                 </div>
                             </div>
