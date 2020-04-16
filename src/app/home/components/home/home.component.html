@@ -183,6 +183,9 @@
                                     <mat-error *ngIf="formCriptomoneda.controls['criptomoneda'].hasError('required')">
                                         La Criptomoneda es <strong>requerido</strong>
                                     </mat-error>
+                                    <mat-error *ngIf="formCriptomoneda.controls['tipo_criptomoneda'].hasError('required')">
+                                        La Tipo Criptomoneda es <strong>requerido</strong>
+                                    </mat-error>
                                 </mat-form-field>
                             </div>
                         </div>
@@ -202,7 +205,7 @@
                 </div>
             </div>
             <div class="col-sx-12 col-md-8">
-                <div class="mat-elevation-z8">
+                <div class="mat-elevation-z8" style="height: 100%;">
                     <div class="row">
                         <div class="col-md-4 input-formulario">
                             <mat-card class="ripple-container"
@@ -313,7 +316,7 @@
                             <div class="col-xs-6">
                                 <div class="row end-xs middle-xs" *ngIf="(this.formularioDevuelto)">
                                     <h4 class="col-xs-12" style="margin-bottom: 0px;">
-                                        Ganancia Criptomoneda: <strong> {{this.gananciaCriptomoneda}}
+                                        Ganancia Criptomoneda: <strong> {{ this.formCriptomoneda.value.ganacia_criptomoneda }}
                                             {{ this.formCriptomoneda.value.tipo_criptomoneda}}</strong>
                                     </h4>
                                     <h4 class="col-xs-12" style="margin-bottom: 0px;">
@@ -351,12 +354,10 @@
                             <h3>
                                 <div class="row end-xs">
                                     <div class="col-xs-12 col-md-4"><strong> Detalle Comision:</strong></div>
-                                    <div class="col-xs-12 col-md-8" *ngIf="this.monedaSeleccionada === 'Dolar'">
-                                        <strong>US$&nbsp;
+                                    <div class="col-xs-12 col-md-8" >
+                                        <strong *ngIf="this.monedaSeleccionada === 'Dolar'">US$&nbsp;
                                             {{this.formCriptomoneda.value.valor_comision_prove | number:'1.2-2' }}</strong>
-                                    </div>
-                                    <div class="col-xs-12 col-md-8" *ngIf="this.monedaSeleccionada === 'Euro'">
-                                        <strong>&#8364;
+                                        <strong *ngIf="this.monedaSeleccionada === 'Euro'">&#8364;
                                             {{this.formCriptomoneda.value.valor_comision_prove | number:'1.2-2' }}</strong>
                                     </div>
                                 </div>
@@ -406,12 +407,10 @@
                             <h3>
                                 <div class="row end-xs">
                                     <div class="col-xs-12 col-md-4"><strong> Detalle Comision:</strong></div>
-                                    <div class="col-xs-12 col-md-8" *ngIf="this.monedaSeleccionada === 'Dolar'">
-                                        <strong>US$&nbsp;
+                                    <div class="col-xs-12 col-md-8" >
+                                        <strong *ngIf="this.monedaSeleccionada === 'Dolar'">US$&nbsp;
                                             {{this.formCriptomoneda.value.valor_comision_vendedor | number:'1.2-2' }}</strong>
-                                    </div>
-                                    <div class="col-xs-12 col-md-8" *ngIf="this.monedaSeleccionada === 'Euro'">
-                                        <strong>&#8364;
+                                        <strong *ngIf="this.monedaSeleccionada === 'Euro'">&#8364;
                                             {{this.formCriptomoneda.value.valor_comision_vendedor | number:'1.2-2' }}</strong>
                                     </div>
                                 </div>
@@ -452,8 +451,11 @@
                 <div class="row between-xs ">
                     <div class="col-xs-2">
                         <div class="box">
-                            <button mat-raised-button type="button" [disabled]="formCriptomoneda.invalid"
-                                style="margin-right: 10px;" (click)="venderMoneda()">Vender</button>
+                            <button mat-raised-button type="button" 
+                                [disabled]="formCriptomoneda.invalid || this.formCriptomoneda.value.estado === 'v'"
+                                style="margin-right: 10px;" (click)="venderMoneda()">
+                                Vender
+                            </button>
                         </div>
                     </div>
                     <div class="col-xs-2">
@@ -472,6 +474,19 @@
 
     <!-- table -->
     <div class="row">
+        <div class="col-xs-12">
+            <mat-form-field *ngFor="let filter of filterSelectObj" style="margin-left: 15px;">
+                <mat-label>Filter {{filter.name}}</mat-label>
+                <select matNativeControl  name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+                    (change)="filterChange(filter, $event)">
+                    <option value="">-- Select {{filter.name}}--</option>
+                    <option *ngFor="let item of filter.options"  [value]="item" >{{item === 'p'? 'Persupuesto': 'Venta'}}</option>
+                </select>
+            </mat-form-field>          
+            &nbsp;
+            <button mat-flat-button color="warn" (click)="resetFilters()">Reset</button>
+        </div>
+
         <div class="col-xs-12 col-md-12">
             <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
 
@@ -495,14 +510,14 @@
                 <ng-container matColumnDef="valor_comision_prove">
                     <th mat-header-cell *matHeaderCellDef> Comision Prove </th>
                     <td mat-cell *matCellDef="let element">
-                        {{element.valor_comision_prove | number:'1.2-2'}}
+                        {{element.costo_criptomoneda_p | number:'1.2-2'}}
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="valor_comision_vendedor">
                     <th mat-header-cell *matHeaderCellDef> Comision vendedor </th>
                     <td mat-cell *matCellDef="let element">
-                        {{((element.comision_vendedor * element.criptomoneda) / 100 )| number:'1.2-2'}}
+                        {{ element.costo_criptomoneda_v | number:'1.2-2'}}
                     </td>
                 </ng-container>
 
@@ -560,7 +575,7 @@
                     <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
                         <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
                             <div class="example-element-diagram">
-                                <div class="example-element-position"> </div>
+                                <div class="example-element-position">{{element.estado === 'p'? 'Persupuesto': 'Venta'}} </div>
                                 <div class="example-element-symbol" *ngIf="element.tipo_criptomoneda === 'Bitcoin' "> <img src="assets/img/btc.icon.svg" alt=""></div>
                                 <div class="example-element-symbol" *ngIf="element.tipo_criptomoneda === 'Ethereum' "><img src="assets/img/eth.icon.svg" alt=""> </div>
                                 <div class="example-element-symbol" *ngIf="element.tipo_criptomoneda === 'Litecoin' "><img src="assets/img/ltc.icon.svg" alt=""></div>
@@ -576,18 +591,18 @@
                                 </div>
                                 <div class="row start-xs">
                                     <div class="col-xs-12 col-md-12" *ngIf=" element.compra_moneda === 'Dolar'|| element.compra_moneda === 'Peso' ">
-                                        Comision Proveedor: ({{element.comision_prove}}%)  US$&nbsp;{{ (element.costo_criptomoneda_p/1 ) | number:'1.2-2' }}
+                                        Comision Proveedor: ({{element.comision_prove}}%)  US$&nbsp;{{ (element.valor_comision_prove/1 ) | number:'1.2-2' }}
                                     </div>
                                     <div class="col-xs-12 col-md-12" *ngIf=" element.compra_moneda === 'Euro'">
-                                        Comision Proveedor: ({{element.comision_prove}}%)  &#8364;{{ (element.costo_criptomoneda_p/1 ) | number:'1.2-2' }}
+                                        Comision Proveedor: ({{element.comision_prove}}%)  &#8364;{{ (element.valor_comision_prove/1 ) | number:'1.2-2' }}
                                     </div>
                                 </div>
                                 <div class="row start-xs">
                                     <div class="col-xs-12 col-md-12" *ngIf=" element.compra_moneda === 'Dolar'|| element.compra_moneda === 'Peso' ">
-                                        Comision Vendedor: ({{element.comision_vendedor}}%) US$&nbsp; {{ (element.costo_criptomoneda_v/1 ) | number:'1.2-2' }}
+                                        Comision Vendedor: ({{element.comision_vendedor}}%) US$&nbsp; {{ (element.valor_comision_vendedor/1) | number:'1.2-2' }}
                                     </div>
                                     <div class="col-xs-12 col-md-12" *ngIf=" element.compra_moneda === 'Euro'">
-                                        Comision Vendedor: ({{element.comision_vendedor}}%)  &#8364;{{ (element.costo_criptomoneda_v/1 ) | number:'1.2-2' }}
+                                        Comision Vendedor: ({{element.comision_vendedor}}%)  &#8364;{{ (element.valor_comision_vendedor/1) | number:'1.2-2' }}
                                     </div>
                                 </div>
                             </div>
@@ -595,37 +610,13 @@
                     </td>
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-                <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+                <tr mat-row (click)="seleccionFila(element)" *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
                     [class.example-expanded-row]="expandedElement === element"
                     (click)="expandedElement = expandedElement === element ? null : element">
                 </tr>
-                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+                <tr mat-row  *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
             </table>
             <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons class="mat-elevation-z8"></mat-paginator>
         </div>
     </div>
 </div>
-
-
-<!-- 
-                                'fecha', 'estado', 'cliente', 'moneda', 'cotizacion', 'prove',
-                                '%_prove', '%_venta', 'importe', 'criptomoneda', 'costo_prove',
-                                'costo_venta', 'g_dolar', 'g_peso', 'g_criptomoneda' 
-                                tabla.push({
-                                  //     'fecha': item.fecha_compra,
-                                  //     'estado': item.estado,
-                                  //     'cliente': item.cliente,
-                                  //     'moneda': item.tipo_criptomoneda,
-                                  //     'cotizacion': item.dolar,
-                                  //     'prove': item.proveedor,
-                                  //     'pc_prove': item.comision_prove,
-                                  //     'pc_venta': item.comision_vendedor,
-                                  //     'importe': item.importe_compra,
-                                  //     'criptomoneda': item.criptomoneda,
-                                  //     'costo_prove': (((item.criptomoneda * item.comision_prove) / 100) + item.criptomoneda),
-                                  //     'costo_venta': (((item.criptomoneda * item.comision_vendedor) / 100) + item.criptomoneda),
-                                  //     'g_dolar': '',
-                                  //     'g_peso': '',
-                                  //     'g_criptomoneda': '',
-                                  //   });
-                            -->
