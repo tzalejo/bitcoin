@@ -1,0 +1,249 @@
+<div class="container">
+  <!-- titulo del formulario -->
+  <div class="row">
+    <div class="col-xs-12 col-md-12">
+      <mat-card class=" mat-elevation-z8">
+        <h2>Filtrados</h2>
+      </mat-card>
+      <br>
+    </div>
+  </div>
+  <div class="mat-elevation-z8">
+    <!-- table -->
+    <div class="row">
+
+      <mat-form-field class="col-xs-12 col-md-2 input-formulario">
+        <mat-label>Filter Criptomoneda</mat-label>
+        <select matNativeControl name="tipo_criptomoneda"
+          (change)="filterChange('tipo_criptomoneda', $event.target.value.trim().toLowerCase())">
+          <!-- <option value="">-- Seleccionar --</option> -->
+          <option [value]="item.criptomoneda" *ngFor="let item of criptos">{{item.criptomoneda}}</option>
+        </select>
+      </mat-form-field>
+
+      <mat-form-field class="col-xs-12 col-md-2 input-formulario">
+        <mat-label>Filter Moneda</mat-label>
+        <select matNativeControl name="compra_moneda"
+          (change)="filterChange('compra_moneda', $event.target.value.trim().toLowerCase())">
+          <option value="">-- Seleccionar --</option>
+          <option [value]="item.compra_moneda" *ngFor="let item of compraMonedas">{{item.compra_moneda}}</option>
+        </select>
+      </mat-form-field>
+
+      <div class="col-xs-12 col-md-4 input-formulario">
+        <!-- <div class="row">
+          <div class="col-xs-12"> -->
+        <mat-form-field>
+          <input matInput placeholder="Fecha Desde" type="date" autocomplete="off"
+            (change)="filterChange('fechaDesde', $event.target.value.trim().toLowerCase())">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Fecha Hasta" type="date" autocomplete="off"
+            (change)="filterChange('fechaHasta', $event.target.value.trim().toLowerCase())">
+        </mat-form-field>
+        <!-- </div>
+        </div> -->
+      </div>
+
+      <mat-form-field class="col-xs-12 col-md-2 input-formulario">
+        <mat-label>Filter Cliente</mat-label>
+        <select matNativeControl name="cliente"
+          (change)="filterChange('cliente', $event.target.value.trim().toLowerCase())">
+          <option value="">-- Seleccionar --</option>
+          <option [value]="cliente.id" *ngFor="let cliente of clientes">{{ cliente.nombre }}</option>
+        </select>
+      </mat-form-field>
+
+      <mat-form-field class="col-xs-12 col-md-2 input-formulario">
+        <mat-label>Filter Estado</mat-label>
+        <select matNativeControl name="estado"
+          (change)="filterChange('estado', $event.target.value.trim().toLowerCase())">
+          <!-- <option value="">-- Seleccionar --</option> -->
+          <option [value]="estado.estado" *ngFor="let estado of estados">{{estado.descripcion}}</option>
+        </select>
+      </mat-form-field>
+      <div class="col-xs-12 col-md-12">
+        <div class="row start-xs">
+          <div class="col-xs-12 col-md-12">
+            <button mat-flat-button color="warn" (click)="resetFilter()" style="margin-left: 15px;">Reset</button>
+            <button mat-flat-button (click)="filtrar()" style="margin-left: 15px;">Filtrar</button>
+          </div>
+        </div>
+        <div class="row between-xs input-formulario">
+          <div class="col-xs-3 col-md-3">
+            <mat-form-field>
+              <mat-label>Total Dolares</mat-label>
+              <input matInput type="text" disabled name="Ganancia Dolares"
+                [value]="(this.filtrar ? this.getGananciaDolar(): 0) | number:'1.2-2'">
+            </mat-form-field>
+          </div>
+          <div class="col-xs-3 col-md-3">
+            <mat-form-field>
+              <mat-label>Total Euros</mat-label>
+              <input matInput type="text" disabled name="Ganancia Euro"
+                [value]="(this.filtrar ? this.getGananciaEuro(): 0) | number:'1.2-2'">
+            </mat-form-field>
+          </div>
+          <div class="col-xs-3 col-md-3">
+            <mat-form-field>
+              <mat-label>Total Pesos</mat-label>
+              <input matInput type="text" disabled name="Ganancia Pesos"
+                [value]="(this.filtrar ? this.getGananciaPeso(): 0) | number:'1.2-2'">
+            </mat-form-field>
+          </div>
+          <div class="col-xs-3 col-md-3">
+            <mat-form-field>
+              <mat-label>Total Criptomonedas</mat-label>
+              <input matInput type="text" disabled name="Ganancia Criptomoneda"
+                [value]="this.filtrar ? this.getGananciaCripto(): 0">
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 col-md-12 input-formulario">
+        <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+
+          <ng-container matColumnDef="fecha">
+            <th mat-header-cell *matHeaderCellDef> Fecha </th>
+            <td mat-cell *matCellDef="let element"> {{element.fecha_compra}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="importe">
+            <th mat-header-cell *matHeaderCellDef> Importe </th>
+            <td mat-cell *matCellDef="let element"> {{element.importe_compra}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="criptomoneda">
+            <th mat-header-cell *matHeaderCellDef> Criptomoneda </th>
+            <td mat-cell *matCellDef="let element">
+              {{element.criptomoneda}} {{element.tipo_criptomoneda}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="valor_comision_prove">
+            <th mat-header-cell *matHeaderCellDef> Comision Prove </th>
+            <td mat-cell *matCellDef="let element">
+              {{element.costo_criptomoneda_p | number:'1.2-2'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="valor_comision_vendedor">
+            <th mat-header-cell *matHeaderCellDef> Comision vendedor </th>
+            <td mat-cell *matCellDef="let element">
+              {{element.costo_criptomoneda_v | number:'1.2-2'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="g_dolar">
+            <th mat-header-cell *matHeaderCellDef> Ganancia Dolar</th>
+            <td mat-cell *matCellDef="let element">
+              <div *ngIf="element.compra_moneda === 'Dolar'">
+                US$&nbsp; {{(element.ganacia_criptomoneda * element.criptomoneda) | number:'1.2-2'}}
+              </div>
+              <div *ngIf=" element.compra_moneda === 'Peso'">
+                US$&nbsp; {{(element.ganacia_criptomoneda * element.costo_criptomoneda_p) | number:'1.2-2'}}
+              </div>
+              <div *ngIf=" element.compra_moneda === 'Euro'">
+                -
+              </div>
+
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="g_euro">
+            <th mat-header-cell *matHeaderCellDef> Ganancia Euro</th>
+            <td mat-cell *matCellDef="let element">
+              <div *ngIf=" element.compra_moneda === 'Euro'">
+                &#8364; {{(element.ganacia_criptomoneda * element.criptomoneda) | number:'1.2-2'}}
+              </div>
+
+              <div *ngIf="element.compra_moneda === 'Dolar' || element.compra_moneda === 'Peso'">
+                -
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="g_peso">
+            <th mat-header-cell *matHeaderCellDef> Ganancia Peso</th>
+            <td mat-cell *matCellDef="let element">
+              <div *ngIf="element.compra_moneda === 'Peso' ">
+                &#36; {{(element.ganacia_criptomoneda * element.costo_criptomoneda_p * element.dolar) | number:'1.2-2'}}
+              </div>
+
+              <div *ngIf="element.compra_moneda !== 'Peso' ">
+                &#36; {{(element.ganacia_criptomoneda * element.criptomoneda * element.dolar) | number:'1.2-2'}}
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="g_criptomoneda">
+            <th mat-header-cell *matHeaderCellDef> Ganancia Criptomoneda</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.ganacia_criptomoneda}}
+            </td>
+          </ng-container>
+
+          <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+              <div class="example-element-detail"
+                [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                <div class="example-element-diagram">
+                  <div class="example-element-position">{{element.estado === 'p'? 'Persupuesto': 'Venta'}} </div>
+                  <div class="example-element-symbol" *ngIf="element.tipo_criptomoneda === 'Bitcoin' "> <img
+                      src="assets/img/btc.icon.svg" alt=""></div>
+                  <div class="example-element-symbol" *ngIf="element.tipo_criptomoneda === 'Ethereum' "><img
+                      src="assets/img/eth.icon.svg" alt=""> </div>
+                  <div class="example-element-symbol" *ngIf="element.tipo_criptomoneda === 'Litecoin' "><img
+                      src="assets/img/ltc.icon.svg" alt=""></div>
+                  <div class="example-element-name"> {{ element.compra_moneda }}</div>
+                  <div class="example-element-weight"
+                    *ngIf=" element.compra_moneda === 'Dolar' || element.compra_moneda === 'Peso' ">US$&nbsp;
+                    {{ element.dolar }} </div>
+                  <div class="example-element-weight" *ngIf=" element.compra_moneda === 'Euro'"> &#8364;
+                    {{ element.dolar }} </div>
+                </div>
+                <div class="example-element-description">
+                  <div class="row start-xs">
+                    <div class="col-xs-12 col-md-12">
+                      Cliente: <strong> {{ element.cliente.nombre}} {{ element.cliente.apellido }} </strong>
+                    </div>
+                  </div>
+                  <div class="row start-xs">
+                    <div class="col-xs-12 col-md-12"
+                      *ngIf=" element.compra_moneda === 'Dolar'|| element.compra_moneda === 'Peso' ">
+                      Comision Proveedor: ({{element.comision_prove}}%)
+                      US$&nbsp;{{ (element.valor_comision_prove/1 ) | number:'1.2-2' }}
+                    </div>
+                    <div class="col-xs-12 col-md-12" *ngIf=" element.compra_moneda === 'Euro'">
+                      Comision Proveedor: ({{element.comision_prove}}%)
+                      &#8364;{{ (element.valor_comision_prove/1 ) | number:'1.2-2' }}
+                    </div>
+                  </div>
+                  <div class="row start-xs">
+                    <div class="col-xs-12 col-md-12"
+                      *ngIf=" element.compra_moneda === 'Dolar'|| element.compra_moneda === 'Peso' ">
+                      Comision Vendedor: ({{element.comision_vendedor}}%) US$&nbsp;
+                      {{ (element.valor_comision_vendedor/1 ) | number:'1.2-2' }}
+                    </div>
+                    <div class="col-xs-12 col-md-12" *ngIf=" element.compra_moneda === 'Euro'">
+                      Comision Vendedor: ({{element.comision_vendedor}}%)
+                      &#8364;{{ (element.valor_comision_vendedor/1 ) | number:'1.2-2' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+          <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+            [class.example-expanded-row]="expandedElement === element"
+            (click)="expandedElement = expandedElement === element ? null : element">
+          </tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons class="mat-elevation-z8"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
