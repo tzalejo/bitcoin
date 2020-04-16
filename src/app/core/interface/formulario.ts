@@ -1,9 +1,11 @@
 export interface Formulario {
-    'id?': number;
+    'id': number;
     'web': string;
-    'monedero': string;
+    'compra_moneda': string;
     'comision_prove': number;
     'comision_vendedor': number;
+    'valor_comision_prove': number;
+    'valor_comision_vendedor': number;
     'criptomoneda': number;
     'tipo_criptomoneda': string;
     'importe_compra': number;
