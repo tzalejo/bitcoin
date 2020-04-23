@@ -1,0 +1,25 @@
+table {
+    width: 100%;
+}
+.input-formulario {
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+.input-mat-card {
+    padding-top: 5px;
+}
+.input-texto {
+    background-color: #ffffff;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+    background: #bbbbbb;
+}
+tr.example-element-row:not(.example-expanded-row):active {
+    background: #bbbbbb;
+}
+tr.example-detail-row {
+    height: 0;
+}

@@ -28,6 +28,9 @@ export class ClienteService {
 
   crearCliente(cliente): Observable<any> {
      return this.httpCliente.post(`${this.url}/crear`, cliente, this.header);
+    }
+  modificarCliente(cliente): Observable<any> {
+    return this.httpCliente.put(`${this.url}/modificar/${cliente.id}`, cliente, this.header);
   }
 
 }
