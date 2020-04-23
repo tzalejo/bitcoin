@@ -32,8 +32,8 @@ export interface TablaFormulario {
   styleUrls: ['./filtros.component.css'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
@@ -42,6 +42,32 @@ export class FiltrosComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   filtroActivo: boolean;
+  /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
+  dataSource = new MatTableDataSource();
+  columnsToDisplay = [
+    'fecha', 'importe', 'criptomoneda', 'valor_comision_prove',
+    'valor_comision_vendedor', 'g_dolar', 'g_euro', 'g_peso', 'g_criptomoneda'];
+  expandedElement: TablaFormulario | null;
+  compraMonedas = [
+    { compra_moneda: 'Dolar' },
+    { compra_moneda: 'Euro' },
+    { compra_moneda: 'Peso' },
+  ];
+  estados = [
+    { estado: 'v', descripcion: 'Venta' },
+    { estado: 'p', descripcion: 'Presupuesto' },
+  ];
+  criptos = [
+    { criptomoneda: 'Bitcoin' },
+    { criptomoneda: 'Ethereum' },
+    { criptomoneda: 'Litecoin' },
+  ];
+  fechaDesde: string;
+  fechaHasta: string;
+  clientes: Cliente[];
+  filterValues = {};
+  /* fin tabla */
+
   constructor(
     private formularioService: FormularioService,
     private clienteService: ClienteService
@@ -60,32 +86,6 @@ export class FiltrosComponent implements OnInit {
         }
       );
   }
-
-  /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  dataSource = new MatTableDataSource();
-  columnsToDisplay = [
-    'fecha', 'importe', 'criptomoneda', 'valor_comision_prove',
-    'valor_comision_vendedor', 'g_dolar', 'g_euro', 'g_peso', 'g_criptomoneda'];
-  expandedElement: TablaFormulario | null;
-  compraMonedas = [
-    { compra_moneda: 'Dolar' },
-    { compra_moneda: 'Euro' },
-    { compra_moneda: 'Peso' },
-  ];
-  estados = [
-    { estado: 'v', descripcion: 'Venta' },
-    { estado: 'p', descripcion: 'Presupuesto' },
-  ];
-  criptos = [
-    { criptomoneda: 'Bitcoin'},
-    { criptomoneda: 'Ethereum'},
-    { criptomoneda: 'Litecoin'},
-  ];
-  fechaDesde: string;
-  fechaHasta: string;
-  clientes: Cliente[];
-  filterValues = {};
-  /* fin tabla */
 
   ngOnInit() {
     // para no mostrar al inicio los totales
@@ -126,24 +126,24 @@ export class FiltrosComponent implements OnInit {
     // this.gananciaDolar = (this.gananciaCriptomoneda * this.formCriptomoneda.value.criptomoneda);
     // return (this.getGananciaCripto() * this.dataSource.);
     return this.dataSource.data
-            .map(t => (t['compra_moneda'] === 'Euro' ? parseFloat(t['ganacia_criptomoneda']) * parseFloat(t['criptomoneda']) : 0 ))
-            .reduce((acc, value) => acc + value, 0);
+      .map(t => (t['compra_moneda'] === 'Euro' ? parseFloat(t['ganacia_criptomoneda']) * parseFloat(t['criptomoneda']) : 0))
+      .reduce((acc, value) => acc + value, 0);
   }
 
   getGananciaDolar() {
     // this.gananciaDolar = (this.gananciaCriptomoneda * this.formCriptomoneda.value.criptomoneda);
     return this.dataSource.data
-    .map(t => (t['compra_moneda'] === 'Dolar' ? parseFloat(t['ganacia_criptomoneda']) * parseFloat(t['criptomoneda']) :
-                parseFloat(t['ganacia_criptomoneda']) * parseFloat(t['costo_criptomoneda_p']) ))
-            .reduce((acc, value) => acc + value, 0);
+      .map(t => (t['compra_moneda'] === 'Dolar' ? parseFloat(t['ganacia_criptomoneda']) * parseFloat(t['criptomoneda']) :
+        parseFloat(t['ganacia_criptomoneda']) * parseFloat(t['costo_criptomoneda_p'])))
+      .reduce((acc, value) => acc + value, 0);
   }
   getGananciaPeso() {
     // this.gananciaDolar = (this.gananciaCriptomoneda * this.formCriptomoneda.value.costo_criptomoneda_p);
     return this.dataSource.data
-    .map(t => (t['compra_moneda'] === 'Peso' ?
-                parseFloat(t['ganacia_criptomoneda']) * parseFloat(t['costo_criptomoneda_p']) * parseFloat(t['dolar']) :
-                parseFloat(t['ganacia_criptomoneda']) * parseFloat(t['criptomoneda']) * parseFloat(t['dolar']) ))
-            .reduce((acc, value) => acc + value, 0);
+      .map(t => (t['compra_moneda'] === 'Peso' ?
+        parseFloat(t['ganacia_criptomoneda']) * parseFloat(t['costo_criptomoneda_p']) * parseFloat(t['dolar']) :
+        parseFloat(t['ganacia_criptomoneda']) * parseFloat(t['criptomoneda']) * parseFloat(t['dolar'])))
+      .reduce((acc, value) => acc + value, 0);
   }
 
   getGananciaCripto() {
