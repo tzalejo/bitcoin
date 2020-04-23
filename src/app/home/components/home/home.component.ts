@@ -1,11 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgModule } from '@angular/core';
 import { Validators, FormBuilder, FormGroupDirective } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import Swal from 'sweetalert2';
-import { MatSort } from '@angular/material/sort';
-import { Router, NavigationEnd } from '@angular/router';
 // servicios
 import { BitstampService } from '@core/services/bitstamp/bitstamp.service';
 import { ClienteService } from '@core/services/cliente/cliente.service';
@@ -116,6 +113,7 @@ export class HomeComponent implements OnInit {
     { name: 'Coinmarketcap' },
     { name: 'Coinmonitor' },
   ];
+  // tslint:disable-next-line: variable-name
   compra_monedas = [
     { name: 'Dolar' },
     { name: 'Euro' },
@@ -159,7 +157,6 @@ export class HomeComponent implements OnInit {
 
   mySubscription: any;
   constructor(
-    private router: Router,
     private bitstampService: BitstampService,
     private clienteService: ClienteService,
     private proveService: ProveService,
@@ -236,7 +233,7 @@ export class HomeComponent implements OnInit {
       });
   }
   // ****************************************************************************************************************************** */
-  // Custom filter method fot Angular Material Datatable
+  // Metodos para los filtro Angular Material Datatable
   createFilter() {
     // tslint:disable-next-line: only-arrow-functions
     const filterFunction = (data: any, filter: string): boolean => {
@@ -308,7 +305,7 @@ export class HomeComponent implements OnInit {
   // ****************************************************************************************************************************** */
 
   seleccionFila(formulario: Formulario) {
-    console.log('formulario', formulario);
+    // console.log('formulario', formulario);
     this.formCriptomoneda = this.fb.group({
       id: [formulario.id],
       web: [formulario.web, Validators.required],
@@ -338,7 +335,7 @@ export class HomeComponent implements OnInit {
     this.formularioDevuelto = true;
     // para realizar los calculos con los datos q selecciono.
     this.calculoFormulario();
-    console.log('formCriptomoneda ', this.formCriptomoneda);
+    // console.log('formCriptomoneda ', this.formCriptomoneda);
   }
 
   actualizarClientes() {
@@ -512,6 +509,13 @@ export class HomeComponent implements OnInit {
         this.formCriptomoneda.controls.estado.setValue('p');
         // console.log('onsubmit', this.formCriptomoneda.value);
         this.formularioService.crearFormulario(this.formCriptomoneda.value).subscribe(data => {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Se creo correctamente el Presupuesto.',
+            showConfirmButton: false,
+            timer: 1500
+          });
           // Cambio el contenido del boton del formulario..
           this.botonAccion = 'Actualizar';
           // seteo el id, para si es necesario hacer la venta(update por id del formulario)..
@@ -523,13 +527,19 @@ export class HomeComponent implements OnInit {
           this.formularioService
             .actualizarFormulario(this.formCriptomoneda.value)
             .subscribe(data => {
-              console.log('actualiza', data);
+              Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Se modifico correctamente el Presupuesto.',
+                showConfirmButton: false,
+                timer: 1500
+              });
               this.actualizoTablaFormulario();
               // this.formCriptomoneda.controls.estado.setValue(data.estado);
             });
         }
       }
-      console.log(this.formCriptomoneda);
+      // console.log(this.formCriptomoneda);
     }
   }
 
@@ -539,6 +549,13 @@ export class HomeComponent implements OnInit {
       this.formularioService.actualizarFormulario(this.formCriptomoneda.value).subscribe(data => {
         // this.formCriptomoneda.controls.estado.setValue(data.estado);
         // recargo la pagina
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Venta realizada correctamente.',
+          showConfirmButton: false,
+          timer: 1500
+        });
         this.nuevoFormulario();
       });
     }
@@ -547,7 +564,13 @@ export class HomeComponent implements OnInit {
   borrarMoneda() {
     if (this.formCriptomoneda.value.id !== null) {
       this.formularioService.eliminarFormulario(this.formCriptomoneda.value).subscribe(data => {
-        // console.log(data);
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Eliminación realizada correctamente.',
+          showConfirmButton: false,
+          timer: 1500
+        });
         this.nuevoFormulario();
       });
     }
@@ -589,6 +612,13 @@ export class HomeComponent implements OnInit {
     if (apellido) {
       this.clienteService.crearCliente({ apellido, nombre: '', email: '', telefono: '' }).subscribe(data => {
         // console.log(data);
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Se Creo correctamente el Cliente.',
+          showConfirmButton: false,
+          timer: 1500
+        });
         this.cliente = data;
         this.actualizarClientes();
         // seteo con el nuevo cliente

@@ -45,7 +45,7 @@ export class RegisterComponent implements OnInit {
      this.buildForms();
   }
 
-  ngOnInit() { 
+  ngOnInit() {
     // this.invokeParticles();
   }
 
@@ -66,7 +66,15 @@ export class RegisterComponent implements OnInit {
             icon: 'success',
             title: `Registración correcta`
           });
-          this.router.navigate(['login']);
+          console.log(data);
+          this.router.navigate(['']);
+          // Swal.fire({
+          //   position: 'top-end',
+          //   icon: 'success',
+          //   title: ` Registración correcta ${data}` ,
+          //   showConfirmButton: false,
+          //   timer: 3500
+          // });
         },
         error => {
           this.leido = false;
