@@ -11,7 +11,6 @@ import { ErrorInterceptorService } from './services/interceptor/error-intercepto
 // servicio
 import { CoinmarketcapService } from './services/coinmarketcap/coinmarketcap.service';
 import { BitstampService } from './services/bitstamp/bitstamp.service';
-import { CoinmonitorService } from './services/coinmonitor/coinmonitor.service';
 import { ProveService } from './services/prove/prove.service';
 import { ClienteService } from './services/cliente/cliente.service';
 import { FormularioService } from './services/formulario/formulario.service';
@@ -31,7 +30,6 @@ import { FormularioService } from './services/formulario/formulario.service';
     // api web
     BitstampService,
     CoinmarketcapService,
-    CoinmonitorService,
     [{
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
