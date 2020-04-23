@@ -1,5 +1,6 @@
 export interface Proveedor {
-    'id?': number;
+    'id': number;
+    'dni': string;
     'nombre': string;
     'apellido': string;
     'telefono': string;
