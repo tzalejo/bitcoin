@@ -6,14 +6,14 @@
   <mat-sidenav-content class="page-content">
     <div class="container-fluid">
       <mat-toolbar color="warn" style="background-color: #222B45;">
-        <a mat-button [routerLink]="['/home']" routerLinkActive="router-link-active"><span>Bitcoin</span></a>
+        <a mat-button [routerLink]="['/home']" routerLinkActive="router-link-active" style="font-size: 30px;"><span>CRIPTOMONEDA</span></a>
         <a mat-button [routerLink]="['/cliente']" routerLinkActive="router-link-active">CLIENTE</a>
         <a mat-button [routerLink]="['/prove']" routerLinkActive="router-link-active">PROVEEDOR</a>
-        <a mat-button [routerLink]="['/filtros']" routerLinkActive="router-link-active">FILTROS</a>
+        <a mat-button [routerLink]="['/filtros']" routerLinkActive="router-link-active">ADMINISTRACION</a>
         <div class="flex-spacer"></div>
-        <button mat-button [matMenuTriggerFor]="menu" class="menu-content">Alejandro</button>
+        <button mat-button [matMenuTriggerFor]="menu" class="menu-content">{{this.usuario.name}}</button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="logout()">Log out</button>
+          <button mat-menu-item (click)="logout()">Log Out</button>
         </mat-menu>
       </mat-toolbar>
       <div class="container-page">

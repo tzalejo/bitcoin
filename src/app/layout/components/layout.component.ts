@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { map, shareReplay } from 'rxjs/operators';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
 import { AuthService } from '@core/services/interceptor/auth.service';
+import { User } from '@core/interface/user';
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
@@ -15,15 +13,16 @@ export class LayoutComponent {
   //     map(result => result.matches),
   //     shareReplay()
   //   );
-
+  usuario: User;
   constructor(
-    private breakpointObserver: BreakpointObserver,
-    private authSevice: AuthService,
+    private authService: AuthService,
     private router: Router,
-  ) {}
+  ) {
+    this.usuario = this.authService.currentUserValue;
+  }
 
   logout() {
-    this.authSevice.logout();
+    this.authService.logout();
     this.router.navigate(['']);
   }
 
