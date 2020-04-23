@@ -29,7 +29,7 @@ export class ErrorInterceptorService implements HttpInterceptor{
         if (error.status === 401 || error.status === 403) {
           msgTitle = `Error Autorización.`;
           // tslint:disable-next-line: max-line-length
-          msgText = ` Status: ${error.status} - ` + (error.status === 401? 'Usuario y/o Contraseña es invalido, verifique por favor.': 'Solicitud NO autorizada.');
+          msgText = ` Status: ${error.status} - ` + (error.status === 401 ? 'Usuario y/o Contraseña es invalido, verifique por favor.': 'Solicitud NO autorizada.');
         } else if (error.status === 0 || error.status === 405 ) { // 405 error en la url
           msgTitle = `Unreachable.`;
           msgText = ` Status: ${error.status} - No se pude comunicar con el servidor.`;
@@ -50,20 +50,22 @@ export class ErrorInterceptorService implements HttpInterceptor{
           // timer: 3500,
         });
         // como hubo un error en el servidor, mando a loguear de vuelta..
-        this.authService.logout();
-        this.router.navigate(['']);
+        if ( error.status === 0 || error.status === 405 ) {
+          this.authService.logout();
+          this.router.navigate(['/auth']);
+        }
         return throwError('Error servidor');
       } else {
         // error client-side
-        console.log('Error: CLIENT-Side', error);
-        // Swal.fire({
-        //   position: 'top-end',
-        //   icon: 'error',
-        //   title: `Error Cliente`,
-        //   showConfirmButton: false,
-        //   text: 'Error',
-        //   timer: 3500
-        // });
+        // console.log('Error: CLIENT-Side', error);
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: `Error Cliente`,
+          showConfirmButton: false,
+          text: `Erro: ${error}`,
+          timer: 3500
+        });
         return throwError(error);
       }
     }));
