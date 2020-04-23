@@ -27,4 +27,8 @@ export class ProveService {
     return this.httpCliente.post(`${this.url}/crear`, proveedor, this.header);
   }
 
+  modificarProveedor(proveedor): Observable<any> {
+    return this.httpCliente.put(`${this.url}/modificar/${proveedor.id}`, proveedor, this.header);
+  }
+
 }
