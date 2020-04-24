@@ -50,7 +50,7 @@ export class ErrorInterceptorService implements HttpInterceptor{
           // timer: 3500,
         });
         // como hubo un error en el servidor, mando a loguear de vuelta..
-        if ( error.status === 0 || error.status === 405 ) {
+        if ( error.status === 0 || error.status === 405 || error.status === 404) {
           this.authService.logout();
           this.router.navigate(['/auth']);
         }
