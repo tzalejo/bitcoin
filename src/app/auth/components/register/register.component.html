@@ -4,31 +4,48 @@
             <mat-card class="shipping-card">
                 <mat-card-header>
                     <mat-card-title>REGISTRO</mat-card-title>
-                    <mat-card-subtitle>Sistema CEC</mat-card-subtitle>
-                  </mat-card-header>
+                    <mat-card-subtitle>Criptomoneda</mat-card-subtitle>
+                </mat-card-header>
                 <mat-form-field class="field-full-width">
-                    <input matInput formControlName="userNombre" placeholder="Usuario"/>
-                    <mat-error *ngIf="formularioRegistro.controls['userNombre'].hasError('required')">Usuario es requerido</mat-error>
+                    <input matInput formControlName="name" placeholder="Nombre" />
+                    <mat-error *ngIf="f.name.hasError('required')">Nombre es
+                        requerido</mat-error>
                 </mat-form-field>
-                
+
                 <mat-form-field class="field-full-width">
-                    <input matInput formControlName="email" placeholder="Email"/>
-                    <mat-error *ngIf="formularioRegistro.controls['email'].hasError('required')">Email es requerido</mat-error>
-                    <mat-error *ngIf="formularioRegistro.controls['email'].hasError('email')">Email incorrecto</mat-error>
+                    <input matInput formControlName="apellido" placeholder="Apellido" />
+                    <mat-error *ngIf="f.apellido.hasError('required')">Apellido es
+                        requerido</mat-error>
                 </mat-form-field>
-                
+
+                <mat-form-field class="field-full-width">
+                    <input matInput formControlName="email" placeholder="Email" />
+                    <mat-error *ngIf="f.email.hasError('required')">Email es requerido
+                    </mat-error>
+                    <mat-error *ngIf="f.email.hasError('email')">Email incorrecto
+                    </mat-error>
+                </mat-form-field>
+
                 <mat-form-field class="field-full-width">
                     <input matInput formControlName="password" placeholder="Password" type="password">
-                    <mat-error *ngIf="formularioRegistro.controls['password'].hasError('required')">Password es requerido</mat-error>
-                    <mat-error *ngIf="formularioRegistro.controls['password'].hasError('minlength')">El Password debe contener al menos 5 caracteres </mat-error>
+                    <mat-error *ngIf="f.password.hasError('required')">Password es
+                        requerido</mat-error>
+                    <mat-error *ngIf="f.password.hasError('minlength')">El Password debe
+                        contener al menos 5 caracteres </mat-error>
                 </mat-form-field>
-                <div>
-                    <button [disabled]="leido" class="btn btn-primary">
-                        <span *ngIf="leido" class="spinner-border spinner-border-sm mr-1"></span>
+
+                <mat-form-field class="field-full-width">
+                    <input matInput formControlName="confirmacionPassword" placeholder="Confirmacion Password" type="password" >
+                    <mat-error *ngIf="f.confirmacionPassword.hasError('required')">Confirmaci&#243;n de Password es requerido</mat-error>
+                    <mat-error *ngIf="!f.confirmacionPassword.hasError('MustMatch')">No coincide el password</mat-error>
+                  
+                </mat-form-field>
+                <button mat-raised-button color="warn" [disabled]="formularioRegistro.invalid" class="btn btn-primary" type="submit">
+                    <span>
                         Register
-                    </button>
-                    <a routerLink="/login" class="btn btn-link">Cancel</a>
-                </div>
+                    </span>
+                </button>
+                <a mat-raised-button [routerLink]="['/home']" class="btn btn-link">Cancel</a>
             </mat-card>
         </form>
     </div>

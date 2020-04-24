@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { User } from '@core/interface/user';
 import { AuthService } from '@core/services/interceptor/auth.service';
 import { environment } from '@environments/environment';
+import { MustMatch } from './password.validation';
+
 // import { UserService } from './../../../core/services/user/user.service';
 import { first } from 'rxjs/operators';
 // Para los mensajes
@@ -18,8 +20,8 @@ declare let particlesJS: any;
 export class RegisterComponent implements OnInit {
   formularioRegistro: FormGroup;
   nuevoUsuario: User = null;
-  // bandera para saber si los datos fueron correcto asi activar o desactivar el boton de registro..
-  leido = false;
+  // bandera para saber si las passwords son correctas..
+  submitted = false;
   // bandera para saber si se envio el registro..
   enviado = false;
   // para el manejo de carteles..
@@ -49,6 +51,8 @@ export class RegisterComponent implements OnInit {
     // this.invokeParticles();
   }
 
+  get f() { return this.formularioRegistro.controls; }
+
   // evento que lanza el formulario
   onSubmit() {
     console.log(this.formularioRegistro);
@@ -56,7 +60,6 @@ export class RegisterComponent implements OnInit {
     if (this.formularioRegistro.invalid) {
       return;
     }
-    this.leido = true;
     this.enviado = true;
     this.authService.register(this.formularioRegistro.value)
       .pipe(first())
@@ -67,17 +70,14 @@ export class RegisterComponent implements OnInit {
             title: `Registración correcta`
           });
           console.log(data);
-          this.router.navigate(['']);
-          // Swal.fire({
-          //   position: 'top-end',
-          //   icon: 'success',
-          //   title: ` Registración correcta ${data}` ,
-          //   showConfirmButton: false,
-          //   timer: 3500
-          // });
-        },
-        error => {
-          this.leido = false;
+          this.router.navigate(['home']);
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: ` Registración correcta ${data.name}` ,
+            showConfirmButton: false,
+            timer: 3500
+          });
         }
       );
   }
@@ -85,9 +85,13 @@ export class RegisterComponent implements OnInit {
   private buildForms() {
     // validamos los datos del formulario, obtengo los valor y los valido.
     this.formularioRegistro = this.formBuilder.group({
-      userNombre: [null, Validators.required],
+      name: [null, Validators.required],
+      apellido: [null, Validators.required],
       email:      [null, [Validators.required, Validators.email]],
-      password:   [null, [Validators.required, Validators.minLength(5)]]
+      password:   [null, [Validators.required, Validators.minLength(5)]],
+      confirmacionPassword:   [null, Validators.required]
+    }, {
+      validator: MustMatch('password', 'confirmacionPassword')
     });
   }
   // public invokeParticles(): void {

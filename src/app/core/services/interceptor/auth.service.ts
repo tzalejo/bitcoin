@@ -58,7 +58,22 @@ export class AuthService {
   }
   // registramos un usuario (secretaria)
   register(user: User) {
-    return this.http.post(`${environment.url_api}/auth/signup`, user, this.httpOptions);
+    return this.http.post<any>(`${environment.url_api}/auth/signup`, user, this.httpOptions)
+      .pipe(
+        map(nuevoUsuario => {
+            // inicio de sesion exitosa si hay un token
+            if (nuevoUsuario && nuevoUsuario.token) {
+              // SSR()
+              if (isPlatformBrowser(this.platformId)) {
+                // almaceno los detalles del usuario y el token jwt en el localstorage para mantener al usuario conectado
+                localStorage.setItem('currentUser', JSON.stringify(nuevoUsuario));
+                this.currentUserSubject.next(nuevoUsuario);
+              }
+            }
+            // console.log('mi usuario ', user);
+            return nuevoUsuario;
+          })
+        );
   }
 
   public get currentUserValue(): User {
