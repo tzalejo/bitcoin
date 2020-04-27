@@ -2,12 +2,14 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
+    "outDir": "./dist",
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "module": "esnext",
+    "module": "commonjs",
+    "emitDecoratorMetadata": true,
+    "typeRoots": ["node_modules/@types"],
     "paths": {
       "@core/*": ["src/app/core/*"],
       "@auth/*": ["src/app/auth/*"],

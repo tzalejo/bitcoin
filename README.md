@@ -25,3 +25,13 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+
+# Instalar electron:
+
+- npm install nan node-gyp
+- npm install node-mac-notifier 
+instale estas dos libreria porque me tira error al instalar electron..
+- npm i -D electron @types/electron
+- npm i electron-debug -D
+
