@@ -34,4 +34,6 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 instale estas dos libreria porque me tira error al instalar electron..
 - npm i -D electron @types/electron
 - npm i electron-debug -D
+- npm i electron-builder -D
+- npm i electron-reload -D
 

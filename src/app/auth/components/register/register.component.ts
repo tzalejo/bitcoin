@@ -61,7 +61,14 @@ export class RegisterComponent implements OnInit {
       return;
     }
     this.enviado = true;
-    this.authService.register(this.formularioRegistro.value)
+    const datos = {
+      apellido: this.formularioRegistro.value.apellido,
+      email: this.formularioRegistro.value.email,
+      name: this.formularioRegistro.value.name,
+      password: this.formularioRegistro.value.password,
+    };
+
+    this.authService.register(datos)
       .pipe(first())
       .subscribe(
         data => {

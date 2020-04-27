@@ -1,40 +1,49 @@
-const { app, BrowserWindow } = require('electron')
-require('electron-debug')({showDevTools: true});
-let win;
-
-function createWindow () {
-  // Create the browser window.
-  win = new BrowserWindow({
-    width: 700, 
-    height: 700,
-    backgroundColor: '#ffffff',
-    icon: `file://${__dirname}/dist/assets/logo.png`
-  })
-
-
-  win.loadURL(`file://${__dirname}/dist/bitcoin/index.html`)
-
-  // Event when the window is closed.
-  win.on('closed', function () {
-    win = null
-  })
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var electron_1 = require("electron");
+var path = require("path");
+var url = require("url");
+var win;
+electron_1.app.on('ready', createWindow);
+electron_1.app.on('activate', function () {
+    if (win === null) {
+        createWindow();
+    }
+});
+function createWindow() {
+    var electronScreen = electron_1.screen;
+    var size = electronScreen.getPrimaryDisplay().workAreaSize;
+    win = new electron_1.BrowserWindow({
+        x: 0,
+        y: 0,
+        width: 1400,
+        height: size.height,
+        webPreferences: {
+            nodeIntegration: true,
+            allowRunningInsecureContent: false
+        },
+    });
+    win.loadURL(url.format({
+        pathname: path.join(__dirname, "/dist/index.html"),
+        protocol: 'file:',
+        slashes: true
+    }));
+    // win.loadURL(`file://${__dirname}/dist/bitcoin/index.html`);
+    // win.webContents.openDevTools();
+    win.on('closed', function () {
+        win = null;
+    });
 }
-
-// Create window on electron intialization
-app.on('ready', createWindow)
-
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-
-  // On macOS specific close process
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-app.on('activate', function () {
-  // macOS specific close process
-  if (win === null) {
-    createWindow()
-  }
-})
+try {
+    electron_1.app.allowRendererProcessReuse = true;
+    // Para ver el estado de la app
+    electron_1.app.on('ready', createWindow);
+    electron_1.app.on('activate', function () {
+        if (win === null) {
+            createWindow();
+        }
+    });
+}
+catch (error) {
+}
+//# sourceMappingURL=main.js.map

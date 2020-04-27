@@ -57,7 +57,7 @@ export class AuthService {
     }
   }
   // registramos un usuario (secretaria)
-  register(user: User) {
+  register(user: any) {
     return this.http.post<any>(`${environment.url_api}/auth/signup`, user, this.httpOptions)
       .pipe(
         map(nuevoUsuario => {
