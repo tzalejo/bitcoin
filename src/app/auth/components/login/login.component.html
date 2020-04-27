@@ -35,11 +35,11 @@
           </div>
         </mat-card-content>
         <mat-card-actions>
-          <button [disabled]="loading" mat-raised-button color="warn" type="submit">
+          <button mat-raised-button [disabled]="loading" color="warn" type="submit">
             Login
           </button>
 
-          <a mat-raised-button [routerLink]="['/auth/register']" routerLinkActive="router-link-active">
+          <a mat-raised-button [routerLink]="['/auth/register']" style="margin: 0px;" routerLinkActive="router-link-active">
             Registro
           </a>
         </mat-card-actions>
