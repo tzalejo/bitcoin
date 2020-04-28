@@ -4,6 +4,7 @@ import { HomeComponent } from './components/home/home.component';
 import { ProveComponent } from './components/prove/prove.component';
 import { ClienteComponent } from './components/cliente/cliente.component';
 import { FiltrosComponent } from './components/filtros/filtros.component';
+import { MaterialModule } from '@material/material.module';
 
 const routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -14,6 +15,9 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [
+    RouterModule,
+    MaterialModule
+  ]
 })
 export class HomeRoutingModule { }
