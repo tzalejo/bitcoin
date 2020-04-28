@@ -11,7 +11,7 @@
         <a mat-button [routerLink]="['/prove']" routerLinkActive="router-link-active">PROVEEDOR</a>
         <a mat-button [routerLink]="['/filtros']" routerLinkActive="router-link-active">ADMINISTRACION</a>
         <div class="flex-spacer"></div>
-        <button mat-button [matMenuTriggerFor]="menu" class="menu-content">{{this.usuario.name}}</button>
+        <button mat-button [matMenuTriggerFor]="menu" class="menu-content">{{this.usuario.name | titlecase}}</button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="logout()">Log Out</button>
         </mat-menu>
