@@ -37,7 +37,15 @@ function createWindow() {
 try {
     electron_1.app.allowRendererProcessReuse = true;
     // Para ver el estado de la app
-    electron_1.app.on('ready', createWindow);
+    // app.on('ready', createWindow);
+    // Quit when all windows are closed.
+    electron_1.app.on('window-all-closed', function () {
+        // On OS X it is common for applications and their menu bar
+        // to stay active until the user quits explicitly with Cmd + Q
+        if (process.platform !== 'darwin') {
+            electron_1.app.quit();
+        }
+    });
     electron_1.app.on('activate', function () {
         if (win === null) {
             createWindow();
