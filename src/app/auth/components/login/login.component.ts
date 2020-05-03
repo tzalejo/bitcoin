@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
         .subscribe(
           data => {
           // envio al home
-          console.log('login.components', data);
+          // console.log('login.components', data);
           this.router.navigate(['home']);
           Swal.fire({
             position: 'top-end',
@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
           });
         },
           error => {
-            console.log(error);
+            // console.log(error);
             this.loading = false;
           }
         );

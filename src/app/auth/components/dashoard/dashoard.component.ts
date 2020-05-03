@@ -36,7 +36,7 @@ export class DashoardComponent implements OnInit {
   // }
 
   public estaLogueado() {
-    console.log(this.authService.currentUserValue);
+    // console.log(this.authService.currentUserValue);
     return (this.authService.currentUserValue ? false : true);
   }
 }
