@@ -6,10 +6,15 @@
   width: 90%;
 }
 .input-formulario {
-  padding-right: 20px;
-  padding-left: 20px;
-  padding-bottom: 10px;
-  padding-top: 10px;
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+}
+
+.botones-formulario {
+  padding-bottom: 25.5px;
+  padding-top: 25.5px;
 }
 
 .ripple-container {

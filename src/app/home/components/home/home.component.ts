@@ -198,17 +198,52 @@ export class HomeComponent {
     // doy formato al grafico
     this.graficaBitcoin = {
       chart: {
-        type: 'line'
+        type: 'line',
+        marginLeft: 0,
+        marginRight: 0,
+        spacingTop: 0,
+        spacingBottom: 0
       },
       title: {
-        text: ''
+        text: '',
+        align: 'left',
+        margin: 0,
+      },
+      legend: {
+        enabled: false
       },
       xAxis: {
-        categories: []
+        categories: [],
+        labels: {
+          enabled: false
+        }
+      },
+      credits: {
+        enabled: false
       },
       yAxis: {
         title: {
           text: ''
+        },
+        labels: {
+          enabled: false
+        }
+      },
+      tooltip: {
+        positioner: function () {
+          return {
+            // right aligned
+            x: this.chart.chartWidth - this.label.width,
+            y: 10 // align to title
+          };
+        },
+        borderWidth: 1,
+        backgroundColor: 'none',
+        pointFormat: 'US$ {point.y}',
+        headerFormat: '',
+        shadow: false,
+        style: {
+          fontSize: '8px'
         }
       },
       series: [
