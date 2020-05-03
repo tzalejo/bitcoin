@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ClienteService } from '@core/services/cliente/cliente.service';
@@ -10,10 +10,14 @@ import Swal from 'sweetalert2';
   styleUrls: ['./cliente.component.css']
 })
 export class ClienteComponent implements OnInit {
+  // Para trabajar con el input dni y hacer focus desde el componente
+  @ViewChild('dni') elementoDni: ElementRef;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   columnsToDisplay = [ 'dni', 'apellido', 'nombre',  'telefono', 'email'];
-  mostrarCancelar = true;
-  mostrarEdit = false;
+  filaSeleccionada = false;
+  mostrarCancelar = false; // Para habilitar/deshabilitar el cancer
+  mostrarEdit = false; // Para habilitar/deshabilitar el editar
+  mostrarNuevo = true; // Para habilitar/deshabilitar el nuevo
   buttonEditar = 'Editar';
   buttonNuevo = 'Nuevo';
   dataSource = new MatTableDataSource();
@@ -48,6 +52,7 @@ export class ClienteComponent implements OnInit {
       });
 
   }
+  // cambio el estado enable/disable de los input
   disabledEnable() {
     // this.formCliente.controls.dni.enable();
     this.formDisabled = !this.formDisabled;
@@ -58,16 +63,27 @@ export class ClienteComponent implements OnInit {
   }
 
   editarCliente() {
+    // habilito los input
     this.disabledEnable();
-    if (this.mostrarCancelar) {
+    // Si no estoy mostrando el boton cancelar, es porque clicke en edit
+    // caso contrario es por que estoy guardando, por ello llamo al servicio
+    if (!this.mostrarCancelar) {
+      // Hago focus en el dni
+      setTimeout(() => {
+        this.elementoDni.nativeElement.focus();
+      }, 0);
+      // cambia el editar por guardar
       this.buttonEditar = 'Guardar';
-      // boton true:oculta , false: muestra
-      this.mostrarCancelar = false;
+      // boton cancelar el estado es true:muestra , false: oculta
+      this.mostrarCancelar = true;
+      // deshabilito el boton nuevo
+      this.mostrarNuevo = false;
     } else {
       this.buttonEditar = 'Editar';
-      this.mostrarCancelar = true;
+      this.mostrarNuevo = true;
+      this.mostrarCancelar = false;
       // realizo la edicion
-      console.log('editar provee', this.formCliente.value);
+      // console.log('editar provee', this.formCliente.value);
       this.clienteService
           .modificarCliente(this.formCliente.value)
           .subscribe(data => {
@@ -83,18 +99,26 @@ export class ClienteComponent implements OnInit {
     }
   }
 
+  // Si estoy editando o nuevo, cancelo todo.
   cancelarEdicionCliente() {
+    // habilito el boton nuevo
+    this.mostrarNuevo = true;
     this.mostrarEdit = false;
-    this.mostrarCancelar = true;
+    // no muestro el cancelar
+    this.mostrarCancelar = false;
+    // pongo el buton en estado inicial, osea edit
     this.buttonEditar = 'Editar';
     this.buttonNuevo = 'Nuevo';
+    // cambio los estado de los input
     this.disabledEnable();
   }
 
   seleccionFila(fila) {
-    // pregunto si estoy editando no puedo seleccionar los datos..
-    if (this.mostrarCancelar) {
-      this.mostrarCancelar = true;
+    // pregunto si estoy editando o creando un nuevo cliente no puedo seleccionar los datos..
+    if (!this.mostrarCancelar) {
+      // habilito el editar
+      this.mostrarEdit = true;
+      this.mostrarCancelar = false;
       Object.keys(this.formCliente.controls).forEach((controlName) => {
         // recorro todo los elementos del formulario y los seteo
         this.formCliente.controls[controlName].setValue(fila[controlName]);
@@ -103,10 +127,11 @@ export class ClienteComponent implements OnInit {
   }
 
   nuevoCliente() {
+    // si el boton es guardar, guardo el nuevo cliente
     if (this.buttonNuevo === 'Guardar') {
-      this.mostrarEdit = false;
-      this.mostrarCancelar = true;
-      console.log(this.formCliente.value);
+      // this.mostrarEdit = true;
+      // this.mostrarCancelar = false;
+      // console.log(this.formCliente.value);
       this.clienteService
         .crearCliente(this.formCliente.value)
         .subscribe(data => {
@@ -121,10 +146,21 @@ export class ClienteComponent implements OnInit {
           this.actualizarClientes();
         });
     } else {
-      this.mostrarCancelar = false;
-      this.mostrarEdit = true;
+      // Para hacer un focus al input dni
+      // this will make the execution after the above boolean has changed???
+      // Esto hará la ejecución después de que el booleano anterior haya cambiado
+      setTimeout(() => {
+        this.elementoDni.nativeElement.focus();
+      }, 0);
+      // this.mostrarCancelar = true;
+      this.mostrarEdit = false;
+      // Borro todo el contenido de los input
       this.resetFormCliente();
     }
+    // Cambio su valor al opuesto..
+    this.mostrarCancelar = !this.mostrarCancelar;
+    // this.mostrarEdit = !this.mostrarEdit;
+
     this.disabledEnable();
     this.buttonNuevo = this.buttonNuevo === 'Nuevo' ? 'Guardar' : 'Nuevo';
   }

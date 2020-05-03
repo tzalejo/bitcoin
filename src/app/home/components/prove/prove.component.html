@@ -80,7 +80,7 @@
                                 style="margin-left: 15px;">Cancelar</button>
                         </div>
                         <div class="col-xs-1">
-                            <button mat-flat-button color="primary" type="submit" (click)="nuevoProveedor()">{{this.buttonNuevo}}</button>
+                            <button mat-flat-button color="primary" type="submit" [disabled]="!this.mostrarCancelar" (click)="nuevoProveedor()">{{this.buttonNuevo}}</button>
                         </div>
                     </div>
                 </div>

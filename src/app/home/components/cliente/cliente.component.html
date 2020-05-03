@@ -17,7 +17,8 @@
                         <div class="col-xs-12 col-md-4">
                             <mat-card>
                                 <mat-label>DNI</mat-label>
-                                <input matInput type="text" formControlName="dni" placeholder="dni" autofocus
+                                <input matInput type="text" formControlName="dni" placeholder="dni" 
+                                    #dni
                                     [value]="this.formCliente.controls.dni">
                             </mat-card>
                             <mat-error *ngIf="!formCliente.controls['dni'].value && (formCliente.controls['dni'].touched || formCliente.controls['dni'].dirty)">
@@ -71,16 +72,16 @@
                     <mat-divider></mat-divider>
                     <div class="row between-xs input-mat-card">
                         <div class="col-xs-3">
-                            <button mat-flat-button color="warn" 
-                                [disabled]="this.mostrarEdit"
+                            <button mat-flat-button color="warn"
+                                [disabled]="!this.mostrarEdit"
                                 (click)="editarCliente()"
                                 style="margin-left: 15px;">{{this.buttonEditar}}</button>
                             <button mat-flat-button (click)="cancelarEdicionCliente()" 
-                                [disabled]="this.mostrarCancelar"
+                                [disabled]="!this.mostrarCancelar"
                                 style="margin-left: 15px;">Cancelar</button>
                         </div>
                         <div class="col-xs-1">
-                            <button mat-flat-button color="primary" type="submit" (click)="nuevoCliente()">{{this.buttonNuevo}}</button>
+                            <button mat-flat-button color="primary" type="submit" [disabled]="!this.mostrarNuevo" (click)="nuevoCliente()">{{this.buttonNuevo}}</button>
                         </div>
                     </div>
                 </div>
