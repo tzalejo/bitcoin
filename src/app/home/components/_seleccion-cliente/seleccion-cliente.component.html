@@ -1,0 +1,16 @@
+<form class="example-form">
+  <mat-form-field class="mat-form-field">
+    <input type="text" placeholder="Busquda por Apellido"  matInput
+          #inputCliente
+          [formControl]="myControl"
+          [value]="cliente ? cliente.apellido+' '+cliente.nombre : '' "
+          [matAutocomplete]="auto">
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" 
+                      [displayWith]="displayFn" 
+                      (optionSelected)="enviarCliente($event)">
+      <mat-option *ngFor="let cliente of filtroCliente | async" [value]="cliente">
+        {{cliente.apellido}} {{cliente.nombre}} 
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>

@@ -14,7 +14,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { QuicklinkModule } from 'ngx-quicklink';
 import { LayoutComponentModule } from '@layout/LayoutComponent.module';
+// grafico
 import { HighchartsChartModule } from 'highcharts-angular';
+// cartel
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({

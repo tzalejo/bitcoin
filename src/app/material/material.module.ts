@@ -25,6 +25,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatNativeDateModule } from '@angular/material/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatRippleModule } from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 @NgModule({
   declarations: [],
   imports: [
@@ -53,6 +54,7 @@ import { MatRippleModule } from '@angular/material/core';
     MatNativeDateModule,
     DragDropModule,
     MatRippleModule,
+    MatAutocompleteModule,
   ],
   exports: [
     MatMenuModule,
@@ -79,6 +81,7 @@ import { MatRippleModule } from '@angular/material/core';
     MatNativeDateModule,
     DragDropModule,
     MatRippleModule,
+    MatAutocompleteModule,
   ]
 })
 export class MaterialModule { }

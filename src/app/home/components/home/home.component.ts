@@ -1,23 +1,24 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild, Input } from '@angular/core';
 import { Validators, FormBuilder, FormGroupDirective } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import Swal from 'sweetalert2';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+// interface
+import { Cliente } from '@core/interface/cliente';
+import { User } from '@core/interface/user';
+// grafico
+import * as Highcharts from 'highcharts';
 // servicios
 import { BitstampService } from '@core/services/bitstamp/bitstamp.service';
 import { ClienteService } from '@core/services/cliente/cliente.service';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Cliente } from '@core/interface/cliente';
-import * as Highcharts from 'highcharts';
 import { ProveService } from '@core/services/prove/prove.service';
 import { Proveedor } from '@core/interface/proveedor';
 import { AuthService } from '@core/services/interceptor/auth.service';
-import { User } from '@core/interface/user';
 import { Formulario } from '@core/interface/formulario';
 import { FormularioService } from '@core/services/formulario/formulario.service';
 import { format } from 'date-fns';
-// import {FormControl} from '@angular/forms';
-// import {FormControl, FormGroup} from '@angular/forms';
+
 export interface TablaFormulario {
   'fecha': string;
   'estado': string;
@@ -49,7 +50,11 @@ export interface TablaFormulario {
     ]),
   ],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
+  // @Input() seleccionCliente: SeleccionClienteComponent;
+  // ---
+  clienteId: number;
+  reseteSeleccionCliente: string;
   // Tabla ***** ELEMENT_DATA
   // dataSource = [];
   columnsToDisplay = [
@@ -155,7 +160,6 @@ export class HomeComponent implements OnInit {
     user_id: [null],
   });
 
-  mySubscription: any;
   constructor(
     private bitstampService: BitstampService,
     private clienteService: ClienteService,
@@ -330,6 +334,10 @@ export class HomeComponent implements OnInit {
       proveedor_id: [formulario.proveedor_id, Validators.required],
       user_id: [formulario.user_id],
     });
+    // asigno el cliente para enviarlo al formulario seleccion-cliente para mostrar en el input
+    this.cliente = formulario['cliente'];
+    // asigno el proveedor
+    this.proveedorSeleccionado = formulario['proveedor'];
     this.botonAccion = 'Actualizar';
     // para q actualice el formulario y no lo cree de vuelta.
     this.formularioDevuelto = true;
@@ -348,7 +356,6 @@ export class HomeComponent implements OnInit {
     this.proveService.getProveedores()
       .subscribe(proveedores => { this.proveedores = proveedores; });
   }
-  ngOnInit(): void {}
 
   getWeb(webSeleccionada) {
     // console.log(webSeleccionada);
@@ -408,6 +415,7 @@ export class HomeComponent implements OnInit {
 
   // aca voy a cambiar el cartel de la moneda de cambio, para cuando es Euro que muestre este valor.
   seleccionMonedero(moneda) {
+    // console.log(moneda);
     this.monedaSeleccionada = 'Dolar';
     if (moneda === 'Euro') {
       this.monedaSeleccionada = 'Euro';
@@ -425,12 +433,14 @@ export class HomeComponent implements OnInit {
   }
 
   seleccionProveedor(proveedor) {
+    // console.log('proveedor', proveedor);
     // Guardo el proveedor para mostrarlo en el detalle
     this.proveedorSeleccionado = proveedor;
     // seteo el valor de proveedor para mostrar en detalle
-    this.formCriptomoneda.controls.proveedor_id.setValue(proveedor.id);
+    this.formCriptomoneda.controls.proveedor_id.setValue(this.proveedorSeleccionado.id);
   }
   seleccionCliente(cliente) {
+    // console.log('selecciono cliente: ', cliente);
     // seteo el valor del cliente para mostrar en detalle
     this.formCriptomoneda.controls.cliente_id.setValue(cliente);
   }
@@ -579,6 +589,9 @@ export class HomeComponent implements OnInit {
   // vamos resetear..
   nuevoFormulario() {
     // reseteo formulario
+    this.cliente = null; // reseteo el valor del cliente que viene componente seleccion-cliente
+    // Esta variable reseteara el input de componente seleccion-cliente
+    this.reseteSeleccionCliente = '';
     this.formCriptomoneda.reset();
     this.formDirective.resetForm();
     this.botonAccion = 'Presupuestar';

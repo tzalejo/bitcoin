@@ -4,18 +4,20 @@
 <!-- lg: large -->
 <div class="container">
 
-    <!-- titulo del formulario -->
-    <div class="row">
+    <!---->
+    <!-- *****************  titulo del formulario  ************************-->
+    <!-- <div class="row">
         <div class="col-xs-12 col-md-12">
             <mat-card class=" mat-elevation-z8">
                 <h2>Informacion</h2>
             </mat-card>
             <br>
         </div>
-    </div>
+    </div> -->
+<!-- ***************** FIN  titulo del formulario  ************************-->
 
 
-    <!-- formulario para el calculo de la venta -->
+<!-- ***************** Formulario para el calculo de la venta ************************-->
     <form [formGroup]="formCriptomoneda" novalidate (ngSubmit)="onSubmit()" autocomplete="off" #formDirective="ngForm" >
         <!-- autocomplete="off" es para quitar el auto completado-->
         <div class="row">
@@ -44,8 +46,15 @@
                     <div class="row center-xs middle-xs">
                         <div class="col-xs-10 input-formulario" style="padding-right: 0px;">
                             <div class="box">
-                                <mat-form-field class="mat-form-field">
-                                    <mat-label>Cliente</mat-label>
+                                <!-- busco los cliente -->
+                                <app-seleccion-cliente 
+                                    [resetInput]="this.reseteSeleccionCliente"
+                                    (clienteSeleccionado)="seleccionCliente($event)"
+                                    [cliente]="this.cliente">
+                                </app-seleccion-cliente>
+                                <!-- <button type="button" (click)="SeleccionClienteComponent.resetInput()">reset</button> -->
+                                <!--  <mat-form-field class="mat-form-field">
+                                   <mat-label>Cliente</mat-label>
                                     <mat-select formControlName="cliente_id">
                                         <mat-option *ngFor="let cliente of clientes" [value]="cliente.id"
                                             (click)="seleccionCliente(cliente.id)">
@@ -55,12 +64,13 @@
                                     <mat-error *ngIf="formCriptomoneda.controls['importe_compra'].hasError('required')">
                                         El Cliente es <strong>requerido</strong>
                                     </mat-error>
-                                </mat-form-field>
+                                </mat-form-field> -->
                             </div>
                         </div>
                         <div class="col-xs-2">
-                            <a class="add-elemento" mat-mini-fab (click)="agregarCliente()" title="Agregar Cliente"><i
-                                    class="fas fa-user-plus"></i></a>
+                            <a class="add-elemento" mat-mini-fab (click)="agregarCliente()" title="Agregar Cliente">
+                                <i class="fas fa-user-plus"></i>
+                            </a>
                         </div>
                     </div>
 
@@ -69,10 +79,9 @@
                             <div class="box">
                                 <mat-form-field class="mat-form-field" style="padding-right: 0px;">
                                     <mat-label>Moneda </mat-label>
-                                    <mat-select formControlName="compra_moneda">
+                                    <mat-select formControlName="compra_moneda" (ngModelChange)="seleccionMonedero($event)">
                                         <mat-option *ngFor="let compra_moneda of compra_monedas"
-                                            [value]="compra_moneda.name"
-                                            (click)="seleccionMonedero(compra_moneda.name)">
+                                            [value]="compra_moneda.name">
                                             {{compra_moneda.name}}
                                         </mat-option>
                                     </mat-select>
@@ -90,9 +99,12 @@
                             <div class="box">
                                 <mat-form-field class="mat-form-field">
                                     <mat-label>Proveedor</mat-label>
+                                    <!--ngModelChange onChange change onSelectionChange (ngModelChange)="seleccionProveedor($event)"-->
                                     <mat-select formControlName="proveedor_id">
-                                        <mat-option *ngFor="let proveedor of proveedores" [value]="proveedor.id"
-                                            (click)="seleccionProveedor(proveedor)">
+                                        <mat-option *ngFor="let proveedor of proveedores" 
+                                            [value]="proveedor.id" 
+                                            (click)="seleccionProveedor(proveedor)"
+                                            >
                                             {{proveedor.nombre}} {{proveedor.apellido}}
                                         </mat-option>
                                     </mat-select>
@@ -126,7 +138,7 @@
                         <div class="col-xs-12 input-formulario">
                             <div class="box">
                                 <mat-form-field class="">
-                                    <mat-label>Comprar del Cliente</mat-label>
+                                    <mat-label>Importe de la Comprar</mat-label>
                                     <input type="number" matInput placeholder="9999.99"
                                         formControlName="importe_compra">
                                     <mat-error *ngIf="formCriptomoneda.controls['importe_compra'].hasError('required')">
@@ -163,11 +175,11 @@
                         <div class="col-xs-12 input-formulario">
                             <div class="box">
                                 <mat-form-field>
-                                    <mat-label>{{this.monedaSeleccionada}}</mat-label>
-                                    <input type="number" matInput placeholder="Precio {{this.monedaSeleccionada}}"
+                                    <mat-label>Cotizaci&#243;n {{this.monedaSeleccionada}}</mat-label>
+                                    <input type="number" matInput placeholder="La cotizacion {{this.monedaSeleccionada}}"
                                         formControlName="dolar">
                                     <mat-error *ngIf="formCriptomoneda.controls['dolar'].hasError('required') ">
-                                        El {{this.monedaSeleccionada}} es <strong>requerido</strong>
+                                        La cotizaci&#243;n del {{this.monedaSeleccionada}} es <strong>requerido</strong>
                                     </mat-error>
                                 </mat-form-field>
                             </div>
@@ -190,20 +202,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row start-xs middle-xs input-formulario">
-                        <div class="col-xs-12">
+                    <div class="row center-xs botones-formulario">
+                        <div class="col-xs-5">
                             <button mat-raised-button [disabled]="formCriptomoneda.invalid"
                                 type="submit">{{this.botonAccion}}</button>
                             <!-- <a mat-raised-button type="button">Limpiar</a> -->
                         </div>
-                        <!-- <div class="col-xs-6">
-                            <a mat-raised-button type="button"
-                                (click)="presupuesto(this.formCriptomoneda.value)">Presupuestar</a>
-                        </div> -->
+                        <div class="col-xs-1"></div>
+                        <div class="col-xs-6">
+                            <button mat-raised-button type="button" (click)="getWeb('Bitstamp')">Actualizar Monedas</button>
+                            <!-- <a mat-raised-button type="button"
+                                (click)="presupuesto(this.formCriptomoneda.value)">Presupuestar</a> -->
+                        </div>
                     </div>
 
                 </div>
             </div>
+            <!-- ***************** Grafico de criptomoneda ************************-->
             <div class="col-sx-12 col-md-8">
                 <div class="mat-elevation-z8" style="height: 100%;">
                     <div class="row">
@@ -226,7 +241,7 @@
                                     <!-- grafica -->
                                     <div id="graficaBitcoin">
                                         <highcharts-chart [Highcharts]="Highcharts" [options]="graficaBitcoin"
-                                            style="width: 100%; height: 150px; display: block;">
+                                            style="width: 100%; height: 100px; display: block;">
                                         </highcharts-chart>
                                     </div>
                                     <!-- grafica -->
@@ -253,7 +268,7 @@
                                     <!-- grafica -->
                                     <div id="graficaEthereum">
                                         <highcharts-chart [Highcharts]="Highcharts" [options]="graficaEthereum"
-                                            style="width: 100%; height: 150px; display: block;">
+                                            style="width: 100%; height: 100px; display: block;">
                                         </highcharts-chart>
                                     </div>
                                     <!-- grafica -->
@@ -280,7 +295,7 @@
                                     <!-- grafica -->
                                     <div id="graficaLitecoin">
                                         <highcharts-chart [Highcharts]="Highcharts" [options]="graficaLitecoin"
-                                            style="width: 100%; height: 150px; display: block;">
+                                            style="width: 100%; height: 100px; display: block;">
                                         </highcharts-chart>
                                     </div>
                                     <!-- grafica -->
@@ -288,20 +303,22 @@
                             </mat-card>
                         </div>
                     </div>
-                    <div class="row end-xs middle-xs input-formulario">
+                    <!-- <div class="row end-xs middle-xs input-formulario">
 
                         <div class="col-xs-12 col-md-6" style="padding-right: 0px;">
                             <button mat-raised-button type="button" (click)="getWeb('Bitstamp')">Actualizar Monedas</button>
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
+            <!-- ***************** FIN Grafico de criptomoneda ************************-->
         </div>
     </form>
+<!-- ***************** fin del formulario ************************-->
     <br>
 
-    <!-- calculo de la venta  -->
+<!-- ***************** calculo de la venta ************************-->
     <div class="row">
         <div class="col-xs-12 col-md-12">
             <div class="row">
@@ -398,7 +415,7 @@
                             <div mat-card-avatar *ngIf="(this.formularioDevuelto)">
                                 <strong>{{this.formCriptomoneda.value['comision_vendedor']}}&#37;</strong></div>
                             <mat-card-title>Vendedor</mat-card-title>
-                            <mat-card-subtitle *ngIf="(this.formularioDevuelto)">{{this.usuario.name}}
+                            <mat-card-subtitle *ngIf="(this.formularioDevuelto)">{{this.usuario.name | titlecase}}
                             </mat-card-subtitle>
                         </mat-card-header>
                         <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"
@@ -470,9 +487,12 @@
             </div>
         </div>
     </div>
-    <br>
+<!-- ***************** Fin calculo de la venta ************************-->
 
-    <!-- table -->
+    <br>    
+
+<!-- ***************** Table ************************-->
+
     <div class="row">
         <div class="col-xs-12">
             <mat-form-field *ngFor="let filter of filterSelectObj" style="margin-left: 15px;">
@@ -619,4 +639,6 @@
             <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons class="mat-elevation-z8"></mat-paginator>
         </div>
     </div>
+
+<!-- ***************** FIN Table ************************-->
 </div>

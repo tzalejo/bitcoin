@@ -11,12 +11,14 @@ import { HomeComponent } from './components/home/home.component';
 import { ClienteComponent } from './components/cliente/cliente.component';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { FiltrosComponent } from './components/filtros/filtros.component';
+import { SeleccionClienteComponent } from './components/_seleccion-cliente/seleccion-cliente.component';
 @NgModule({
   declarations: [
     HomeComponent,
     ProveComponent,
     ClienteComponent,
     FiltrosComponent,
+    SeleccionClienteComponent,
   ],
   imports: [
     CommonModule,
