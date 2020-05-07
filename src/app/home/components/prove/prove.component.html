@@ -17,7 +17,7 @@
                         <div class="col-xs-12 col-md-4">
                             <mat-card>
                                 <mat-label>DNI</mat-label>
-                                <input matInput type="text" formControlName="dni" placeholder="dni" autofocus
+                                <input matInput type="text" formControlName="dni" placeholder="dni" #dni
                                     [value]="this.formProveedor.controls.dni">
                             </mat-card>
                             <mat-error *ngIf="!formProveedor.controls['dni'].value && (formProveedor.controls['dni'].touched || formProveedor.controls['dni'].dirty)">
@@ -72,15 +72,15 @@
                     <div class="row between-xs input-mat-card">
                         <div class="col-xs-3">
                             <button mat-flat-button color="warn" 
-                                [disabled]="this.mostrarEdit"
+                                [disabled]="!this.mostrarEdit"
                                 (click)="editarProveedor()"
                                 style="margin-left: 15px;">{{this.buttonEditar}}</button>
                             <button mat-flat-button (click)="cancelarEdicionProve()" 
-                                [disabled]="this.mostrarCancelar"
+                                [disabled]="!this.mostrarCancelar"
                                 style="margin-left: 15px;">Cancelar</button>
                         </div>
                         <div class="col-xs-1">
-                            <button mat-flat-button color="primary" type="submit" [disabled]="!this.mostrarCancelar" (click)="nuevoProveedor()">{{this.buttonNuevo}}</button>
+                            <button mat-flat-button color="primary" type="submit" [disabled]="!this.mostrarNuevo" (click)="nuevoProveedor()">{{this.buttonNuevo}}</button>
                         </div>
                     </div>
                 </div>
