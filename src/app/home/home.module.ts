@@ -12,6 +12,12 @@ import { ClienteComponent } from './components/cliente/cliente.component';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { FiltrosComponent } from './components/filtros/filtros.component';
 import { SeleccionClienteComponent } from './components/_seleccion-cliente/seleccion-cliente.component';
+// Import pdfmake-wrapper and the fonts to use
+import { PdfMakeWrapper } from 'pdfmake-wrapper';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts'; // fonts provided for pdfmake
+// Set the fonts to use
+PdfMakeWrapper.setFonts(pdfFonts);
 @NgModule({
   declarations: [
     HomeComponent,

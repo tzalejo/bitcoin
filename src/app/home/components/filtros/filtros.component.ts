@@ -7,6 +7,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ClienteService } from '@core/services/cliente/cliente.service';
 import { Cliente } from '@core/interface/cliente';
 
+import { PdfMakeWrapper, Txt, Table, Cell } from 'pdfmake-wrapper';
 export interface TablaFormulario {
   'fecha': string;
   'estado': string;
@@ -67,10 +68,10 @@ export class FiltrosComponent implements OnInit {
   clientes: Cliente[];
   filterValues = {};
   /* fin tabla */
-
   constructor(
     private formularioService: FormularioService,
-    private clienteService: ClienteService
+    private clienteService: ClienteService,
+    // private pdfService: PdfService
   ) {
 
     // seteo mi filtro por defecto
@@ -85,6 +86,7 @@ export class FiltrosComponent implements OnInit {
           this.filtroActivo = false;
         }
       );
+    this.filtrar();
   }
 
   ngOnInit() {
@@ -105,10 +107,10 @@ export class FiltrosComponent implements OnInit {
           this.filtroActivo = true;
           this.dataSource.data = data;
           this.dataSource.paginator = this.paginator;
-          console.log(this.dataSource.data);
-          console.log(this.getGananciaEuro());
-          console.log(this.getGananciaDolar());
-          console.log(this.getGananciaPeso());
+          // console.log(this.dataSource.data);
+          // console.log(this.getGananciaEuro());
+          // console.log(this.getGananciaDolar());
+          // console.log(this.getGananciaPeso());
         }
       );
   }
@@ -119,7 +121,7 @@ export class FiltrosComponent implements OnInit {
 
   filterChange(name, event) {
     this.filterValues[name] = event;
-    console.log(this.filterValues);
+    // console.log(this.filterValues);
   }
 
   getGananciaEuro() {
@@ -149,5 +151,115 @@ export class FiltrosComponent implements OnInit {
   getGananciaCripto() {
     // tslint:disable-next-line: no-string-literal
     return this.dataSource.data.map(t => parseFloat(t['ganacia_criptomoneda'])).reduce((acc, value) => acc + value, 0);
+  }
+  generarpdf() {
+    const pdf = new PdfMakeWrapper();
+
+    pdf.pageSize('A4');
+    pdf.pageMargins([20, 60, 20, 60]);
+    pdf.pageOrientation('portrait');
+
+    const fecha = new Date();
+    pdf.add(
+      // tslint:disable-next-line: no-unused-expression
+      new Txt(`Fecha: ${fecha.toLocaleDateString()}`).alignment('right').fontSize(10).end
+    );
+    pdf.add(
+      new Txt('INGENIERIA DE SISTEMA').fontSize(18).alignment('center').decorationStyle('double').margin([0, 0, 0, 20]).end
+    );
+    pdf.add(
+      new Txt('RESUMEN').fontSize(12).margin([0, 0, 0, 20]).end
+    );
+
+    pdf.add(
+      new Txt(`Criptomoneda:  ${this.filterValues['tipo_criptomoneda']}`).end
+    );
+    pdf.add(
+      new Txt((this.filterValues['compra_moneda'] ? 'Moneda: ' + this.filterValues['compra_moneda'] : '') ).end
+    );
+    pdf.add(
+      new Txt((this.filterValues['fechaDesde'] ? 'Fecha Desde: ' + this.filterValues['fechaDesde'] : '') ).end
+    );
+    pdf.add(
+      new Txt((this.filterValues['fechaHasta'] ? 'Fehca Hasta: ' + this.filterValues['fechaHasta'] : '')).end
+    );
+    pdf.add(
+      new Txt((this.filterValues['cliente'] ? 'Cliente: ' + this.filterValues['cliente'] : '')).end
+    );
+    pdf.add(
+      new Txt('Estado: ' + (this.filterValues['estado'] === 'v' ? 'Venta' : 'Presupuesto')).end
+    );
+    pdf.add(
+      new Txt('').margin([0, 0, 0, 20]).end
+    );
+    pdf.add(
+      new Table([
+        [
+          new Txt('FECHA').bold().end,
+          new Txt('IMPORTE').bold().end,
+          new Txt('COTIZACION').bold().end,
+          new Txt('PROVEEDOR').bold().end,
+          new Txt('VENDEDOR').bold().end,
+          new Txt('DOLAR').bold().end,
+          new Txt('EURO').bold().end,
+          new Txt('PESO').bold().end,
+          new Txt('CRIPTOMONEDA').bold().end,
+        ]
+      ]).fontSize(8).widths([50, 50, 50, 55, 55, 50, 50, 50, 75]).end,
+    );
+    pdf.add(
+      new Table(this.getFila()).fontSize(8).widths([50, 50, 50, 55, 55, 50, 50, 50, 75]).margin([0, 0, 0, 20]).end
+    );
+
+    pdf.add(
+      new Txt(`Total Dolar: US$ ${this.getGananciaDolar().toFixed(2)}`).end
+    );
+    pdf.add(
+      new Txt(`Total Euro: € ${this.getGananciaEuro().toFixed(2)}`).end
+    );
+    pdf.add(
+      new Txt(`Total Peso: $ ${this.getGananciaPeso().toFixed(2)}`).end
+    );
+    pdf.add(
+      new Txt(`Total Criptomoneda:  ${this.getGananciaCripto()}`).end
+    );
+    pdf.create().open();
+  }
+  getFila() {
+    const fila = [];
+    this.dataSource.data.map(f => {
+      let dolar = 0;
+      if (f['compra_moneda'] === 'Dolar') {
+        dolar = f['ganacia_criptomoneda'] * f['criptomoneda'];
+      }
+      if (f['compra_moneda'] === 'Peso') {
+        dolar = f['ganacia_criptomoneda'] * f['costo_criptomoneda_p'];
+      }
+
+      let euro = 0;
+      if (f['compra_moneda'] === 'Euro') {
+        euro = f['ganacia_criptomoneda'] * f['criptomoneda'];
+      }
+
+      let peso = 0;
+      if (f['compra_moneda'] === 'Peso') {
+        peso = parseFloat(f['ganacia_criptomoneda']) * parseFloat(f['costo_criptomoneda_p']) * parseFloat(f['dolar']);
+      }
+      if (f['compra_moneda'] !== 'Peso') {
+        peso = f['ganacia_criptomoneda'] * f['criptomoneda'] * f['dolar'];
+      }
+      fila.push([
+        f['fecha'],
+        f['importe_compra'],
+        f['criptomoneda'],
+        f['costo_criptomoneda_p'],
+        f['costo_criptomoneda_v'],
+        dolar.toFixed(2),
+        euro.toFixed(2),
+        peso.toFixed(2),
+        f['ganacia_criptomoneda']
+      ]);
+    });
+    return fila;
   }
 }

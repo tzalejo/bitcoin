@@ -58,16 +58,21 @@
         <mat-label>Filter Estado</mat-label>
         <select matNativeControl name="estado"
           (change)="filterChange('estado', $event.target.value.trim().toLowerCase())">
-          <!-- <option value="">-- Seleccionar --</option> -->
           <option [value]="estado.estado" *ngFor="let estado of estados">{{estado.descripcion}}</option>
         </select>
       </mat-form-field>
       <div class="col-xs-12 col-md-12">
-        <div class="row start-xs">
-          <div class="col-xs-12 col-md-12">
+        <div class="row between-xs">
+          <div class="col-md-12">
             <button mat-flat-button color="warn" (click)="resetFilter()" style="margin-left: 15px;">Reset</button>
             <button mat-flat-button (click)="filtrar()" style="margin-left: 15px;">Filtrar</button>
+            <button mat-flat-button (click)="generarpdf()"
+                class="btn btn-primary" style="margin-left: 15px;">
+              <i class="material-icons">picture_as_pdf</i> 
+              <span>Open PDF</span>
+            </button>
           </div>
+          
         </div>
         <div class="row between-xs input-formulario">
           <div class="col-xs-3 col-md-3">
