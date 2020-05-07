@@ -14,7 +14,6 @@ export class ClienteComponent implements OnInit {
   @ViewChild('dni') elementoDni: ElementRef;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   columnsToDisplay = [ 'dni', 'apellido', 'nombre',  'telefono', 'email'];
-  filaSeleccionada = false;
   mostrarCancelar = false; // Para habilitar/deshabilitar el cancer
   mostrarEdit = false; // Para habilitar/deshabilitar el editar
   mostrarNuevo = true; // Para habilitar/deshabilitar el nuevo
