@@ -8,6 +8,7 @@ import { ClienteService } from '@core/services/cliente/cliente.service';
 import { Cliente } from '@core/interface/cliente';
 
 import { PdfMakeWrapper, Txt, Table, Cell } from 'pdfmake-wrapper';
+import Swal from 'sweetalert2';
 export interface TablaFormulario {
   'fecha': string;
   'estado': string;
@@ -153,6 +154,18 @@ export class FiltrosComponent implements OnInit {
     return this.dataSource.data.map(t => parseFloat(t['ganacia_criptomoneda'])).reduce((acc, value) => acc + value, 0);
   }
   generarpdf() {
+    if (this.dataSource.data.length === 0) {
+      // para cuando no haya datos y asi no generar error..
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'Error Filtro',
+        showConfirmButton: true,
+        text: 'Debe realizar un filtro de los datos.',
+        // timer: 3500,
+      });
+      return false;
+    }
     const pdf = new PdfMakeWrapper();
 
     pdf.pageSize('A4');
