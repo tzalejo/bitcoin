@@ -63,7 +63,7 @@ export class ErrorInterceptorService implements HttpInterceptor{
           icon: 'error',
           title: `Error Cliente`,
           showConfirmButton: false,
-          text: `Erro: ${error}`,
+          text: `Error: ${error.error}`,
           timer: 3500
         });
         return throwError(error);
