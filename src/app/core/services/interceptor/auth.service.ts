@@ -76,6 +76,15 @@ export class AuthService {
         );
   }
 
+  resetPassword(email: string) {
+    return this.http.post<any>(`${environment.url_api}/auth/resetPassword`, { email }, this.httpOptions)
+      .pipe(
+        map( data => {
+          return data;
+        })
+      );
+  }
+
   public get currentUserValue(): User {
     if (isPlatformBrowser(this.platformId)) {
       // Client only code.
