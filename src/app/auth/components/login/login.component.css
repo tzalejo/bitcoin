@@ -14,6 +14,10 @@ mat-card-actions{
   margin-top: -12px;
 }
 
+/* para centrar */
+mat-card-header {
+  display: inherit;
+}
 /* #particles-js{
   position:inherit;
 } */
@@ -48,4 +52,19 @@ mat-card-actions{
   /* bottom: 0px; */
   left: 0px;
   background-color: #1d1d1d;
+}
+
+#link-password{
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  color: #1a73e8;
+  font-weight: 500;
+  letter-spacing: .25px;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: inherit;
+  outline: 0;
+  padding: 0;
+  text-align: left;
 }

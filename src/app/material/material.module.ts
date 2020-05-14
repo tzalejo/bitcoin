@@ -26,6 +26,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatRippleModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTabsModule } from '@angular/material/tabs';
 @NgModule({
   declarations: [],
   imports: [
@@ -55,6 +56,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     DragDropModule,
     MatRippleModule,
     MatAutocompleteModule,
+    MatTabsModule,
   ],
   exports: [
     MatMenuModule,
@@ -82,6 +84,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     DragDropModule,
     MatRippleModule,
     MatAutocompleteModule,
+    MatTabsModule,
   ]
 })
 export class MaterialModule { }

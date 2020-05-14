@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 // servicios
 import { AuthService } from 'src/app/core/services/interceptor/auth.service';
 import Swal from 'sweetalert2';
+import { MatTabGroup } from '@angular/material/tabs';
 // import { environment } from 'src/environments/environment';
 // declare let particlesJS: any;
 @Component({
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit {
   respuesta$: Observable<any>;
   status: string;
   loading = false; // para spinner que esta cargado el botton login
+  botonSiguiente = false;
   submitted = false;
   hide = false;
   constructor(
@@ -73,6 +75,32 @@ export class LoginComponent implements OnInit {
   registro() {
     this.router.navigate(['register']);
   }
+  // Me permite cambiar de Tab
+  public ventanaEnvioPassword(tabGroup: MatTabGroup) {
+    const tabCount = tabGroup._tabs.length;
+    tabGroup.selectedIndex = (tabGroup.selectedIndex + 1) % tabCount;
+  }
+
+  enviarPassword(email) {
+    // desabilito el boton para que no clickean de mas..
+    this.botonSiguiente = true;
+    // llamo al servicio de reset password
+    this.authService.resetPassword(email)
+    .subscribe(
+      data => {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: ` Password Reseteado` ,
+          showConfirmButton: false,
+          text: `Verifique su correo electronico.`,
+          timer: 3500
+        });
+        this.router.navigate(['home']);
+      }
+    );
+  }
+
   // public invokeParticles(): void {
   //   // SSR() - Pregunto si estoy del lado del navegador para que renderize de ese lado
   //   if (isPlatformBrowser(this.platformId)) {
@@ -80,4 +108,5 @@ export class LoginComponent implements OnInit {
   //     particlesJS('particles-js', environment.ParticlesConfig, () => console.log('se ejecto particles-js'));
   //   }
   // }
+
 }

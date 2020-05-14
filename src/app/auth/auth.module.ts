@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 // Para formulario
 import { ReactiveFormsModule } from '@angular/forms';
 // material
@@ -21,6 +22,7 @@ import { MaterialModule } from '@material/material.module';
     AuthRoutingModule,
     MaterialModule,
     ReactiveFormsModule,
+    FormsModule,
     // SharedModule
   ]
 })
