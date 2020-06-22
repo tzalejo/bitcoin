@@ -21,6 +21,7 @@ export class LoginComponent implements OnInit {
   status: string;
   loading = false; // para spinner que esta cargado el botton login
   botonSiguiente = false;
+  botonEnviarNuevaPass = false; // bandera para mostrar error de reset email
   submitted = false;
   hide = false;
   constructor(
@@ -77,28 +78,39 @@ export class LoginComponent implements OnInit {
   }
   // Me permite cambiar de Tab
   public ventanaEnvioPassword(tabGroup: MatTabGroup) {
+    // desabilito mensaje de error de mail requerido
+    this.botonEnviarNuevaPass = false;
     const tabCount = tabGroup._tabs.length;
     tabGroup.selectedIndex = (tabGroup.selectedIndex + 1) % tabCount;
   }
 
   enviarPassword(email) {
-    // desabilito el boton para que no clickean de mas..
-    this.botonSiguiente = true;
-    // llamo al servicio de reset password
-    this.authService.resetPassword(email)
-    .subscribe(
-      data => {
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: ` Password Reseteado` ,
-          showConfirmButton: false,
-          text: `Verifique su correo electronico.`,
-          timer: 3500
-        });
-        this.router.navigate(['home']);
-      }
-    );
+    if (email === '' || email === null ) {
+      // habilito mensaje de error de mail requerido
+      this.botonEnviarNuevaPass = true;
+    } else {
+      // desabilito el boton para que no clickean de mas..
+      this.botonSiguiente = true;
+      // llamo al servicio de reset password
+      this.authService.resetPassword(email)
+      .subscribe(
+        data => {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: ` Password Reseteado` ,
+            showConfirmButton: false,
+            text: `Verifique su correo electronico.`,
+            timer: 3500
+          });
+          this.router.navigate(['home']);
+        },
+        error => {
+          console.log(this.botonSiguiente);
+          this.botonSiguiente = false;
+        }
+      );
+    }
   }
 
   // public invokeParticles(): void {
